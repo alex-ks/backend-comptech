@@ -9,9 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Comptech.Backend.Service.Data;
 using Comptech.Backend.Service.Models;
-using Comptech.Backend.Service.Services.Security;
-using Comptech.Backend.Service.Core.Sessions;
-using Comptech.Backend.Service.Services.Sessions;
 
 namespace Comptech.Backend.Service.Controllers
 {
@@ -31,9 +28,7 @@ namespace Comptech.Backend.Service.Controllers
         #region Ctor
         public PhotoController(UserManager<ApplicationUser> userManager,
                                ILoggerFactory loggerFactory,
-                               IPhotoRepository photoRepository,
-                               ISessionStore sessionStore,
-                               ICryptographyService cryptoService)
+                               IPhotoRepository photoRepository)
         {
             this.userManager = userManager;
             logger = loggerFactory.CreateLogger<UserController>();

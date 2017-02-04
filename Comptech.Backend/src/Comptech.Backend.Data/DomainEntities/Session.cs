@@ -13,10 +13,7 @@ namespace Comptech.Backend.Data.DomainEntities
         public DateTime CreatedAt { get; set; }
         public DateTime ExpiresAt { get; set; }
         public DateTime LastActive { get; set; }
-        public DateTime? ClosedAt { get; set; }
-
-        [NotMapped]
-        public bool IsActive => ExpiresAt > DateTime.Now && !ClosedAt.HasValue;
+        public SessionStatus Status { get; set; }
     
     }
 

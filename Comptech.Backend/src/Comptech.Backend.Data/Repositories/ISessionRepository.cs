@@ -9,9 +9,7 @@ namespace Comptech.Backend.Data.Repositories
     public interface ISessionRepository : IRepository<Session>
     {
         IEnumerable<int> GetAllTimedOut(TimeSpan sessionTimeout);
-        bool IsActive(int sessionId);
+        Session GetLastSessionForUser(int userId);
         Session GetSessionById(int sessionId);
-        void SetLastActive(int sessionId, DateTime utcNow);
-        Session GetActualById(int id);
     }
 }
