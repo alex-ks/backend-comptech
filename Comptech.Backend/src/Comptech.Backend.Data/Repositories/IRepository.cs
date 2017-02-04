@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Data.Repositories
 {
-    public interface IRepository<TEntity> : IDisposable
+    public interface IRepository<TEntity>
     {
         bool Add(TEntity entity);
         bool Update(TEntity entity);
