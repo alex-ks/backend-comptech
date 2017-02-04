@@ -25,11 +25,23 @@ namespace Comptech.Backend.Service.Controllers
 
         [Route("rest/bpm")]
         [HttpPost]
-        public IActionResult AcceptPulseFromMobile([FromBody] AcceptPulseRequest request)
+        public async Task<IActionResult> AcceptPulseFromMobile([FromBody] AcceptPulseRequest request,[FromServices] ISessionRepository sessionRepository)
         {
             using (logger.BeginScope(nameof(AcceptPulseFromMobile)))
             {
                 logger.LogInformation("Pulse accepted");
+                logger.LogInformation("User tries to get name");
+                try
+                {
+                    var user = await userManager.GetUserAsync(HttpContext.User);
+                    var userId = await userManager.GetUserIdAsync(user);
+                    var session = sessionRepository.GetLastSessionForUser(userId);
+                }
+                catch(Exception exception)
+                {
+                    logger.LogError("Exception caught: {0}, {1}", exception.Message, exception.StackTrace);
+                    return BadRequest(exception.Message);
+                }
                 return Ok();
             }
         }
