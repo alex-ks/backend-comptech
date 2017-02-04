@@ -50,8 +50,14 @@ namespace Comptech.Backend.Service
                     .SetAccessTokenLifetime(TimeSpan.FromMinutes(15));
 
             services.AddMvc();
-        }
 
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(1);
+                options.CookieHttpOnly = true;
+            });
+        }
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -69,6 +75,7 @@ namespace Comptech.Backend.Service
             app.UseOAuthValidation();
             app.UseOpenIddict();
 
+            app.UseSession();
             app.UseMvc();
         }
     }

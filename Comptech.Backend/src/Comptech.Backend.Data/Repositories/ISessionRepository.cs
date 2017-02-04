@@ -8,6 +8,10 @@ namespace Comptech.Backend.Data.Repositories
 {
     public interface ISessionRepository : IRepository<Session>
     {
-        Session GetLastSessionForUser(int userId);
+        IEnumerable<int> GetAllTimedOut(TimeSpan sessionTimeout);
+        bool IsActive(int sessionId);
+        Session GetSessionById(int sessionId);
+        void SetLastActive(int sessionId, DateTime utcNow);
+        Session GetActualById(int id);
     }
 }
