@@ -60,7 +60,7 @@ namespace Comptech.Backend.Service.Controllers
                     logger.LogWarning($"User {userId}: Session is already finished");
                     return StatusCode(409); //Conflict
                 }
-
+                //обновляем статус
                 session.Status = SessionStatus.FINISHED;
                 repository.Update(session);
 
