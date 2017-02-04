@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Comptech.Backend.Service.Data;
+using Newtonsoft.Json;
 
 namespace Comptech.Backend.Service
 {
@@ -49,13 +50,10 @@ namespace Comptech.Backend.Service
                     .DisableHttpsRequirement()
                     .SetAccessTokenLifetime(TimeSpan.FromMinutes(15));
 
-            services.AddMvc();
+            var timeoutCheckInterval = JsonConvert.DeserializeObject<TimeSpan>(Configuration["TimeoutCheckInterval"]);
+            var sessionTimeout = JsonConvert.DeserializeObject<TimeSpan>(Configuration["SessionTimeout"]); 
 
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(1);
-                options.CookieHttpOnly = true;
-            });
+            services.AddMvc();
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,7 +73,6 @@ namespace Comptech.Backend.Service
             app.UseOAuthValidation();
             app.UseOpenIddict();
 
-            app.UseSession();
             app.UseMvc();
         }
     }

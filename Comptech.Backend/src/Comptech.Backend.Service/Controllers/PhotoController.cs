@@ -33,8 +33,6 @@ namespace Comptech.Backend.Service.Controllers
             this.userManager = userManager;
             logger = loggerFactory.CreateLogger<UserController>();
             _photoRepository = photoRepository;
-            _sessionStore = sessionStore;
-            _cryptoService = cryptoService;
         }
         #endregion
 

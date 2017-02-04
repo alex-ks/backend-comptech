@@ -11,24 +11,23 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Service
 {
-    public class SessionTracker
+    public class SessionTracker : IDisposable
     {
         private readonly ILogger _logger;
         private readonly ISessionRepository _sessionRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly TimeSpan _sessionTimeout;
         private readonly Timer _timer;
 
-        public SessionTracker(ILogger logger,
+        private bool _isDisposed;
+
+        public SessionTracker(ILoggerFactory loggerFactory,
             ISessionRepository sessionRepository,
-            UserManager<ApplicationUser> userManager,
             TimeSpan sessionTimeout,
             TimeSpan timeoutCheckInterval)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<SessionTracker>();
             _sessionRepository = sessionRepository;
-            _userManager = userManager;
             _sessionTimeout = sessionTimeout;
 
             _timer = new Timer(t => RemoveTimedOut(), new object(), timeoutCheckInterval, timeoutCheckInterval);
@@ -47,7 +46,7 @@ namespace Comptech.Backend.Service
                 Status = SessionStatus.ACTIVE
             };
             _sessionRepository.Add(session);
-            _logger.LogInformation($"SessionId:{session.SessionID} for userId:{userId}");
+            _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
             return session;
         }
 
@@ -65,6 +64,7 @@ namespace Comptech.Backend.Service
         {
             var session = _sessionRepository.GetSessionById(sessionId);
             session.LastActive = DateTime.UtcNow;
+            _logger.LogInformation($"Session {sessionId} is active");
             _sessionRepository.Update(session);
         }
 
@@ -73,6 +73,20 @@ namespace Comptech.Backend.Service
             var session = _sessionRepository.GetSessionById(sessionId);
             session.Status = SessionStatus.FINISHED;
             _sessionRepository.Update(session);
+            _logger.LogInformation($"Session {sessionId} is finished");
+
+        }
+
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _timer.Dispose();
+            _isDisposed = true;
+        }
+
+        ~SessionTracker()
+        {
+            Dispose();
         }
     }
 }
