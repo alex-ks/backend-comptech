@@ -27,7 +27,17 @@ namespace Comptech.Backend.Service.Controllers
         {
             using (logger.BeginScope(nameof(FinishSession)))
             {
-                //TODO: Добавить логику завершения сессии
+                //если в запросе нет id сессии, то возвращаем ошибку(?)
+                if (request.SessionId == null)
+                {
+                    logger.LogError("Attempted to finish session with null sessionId");
+                    return BadRequest();
+                }
+
+                var user = await userManager.GetUserAsync(HttpContext.User);
+                var userId = await userManager.GetUserIdAsync(user);
+
+                
 
                 return Ok();
             }
