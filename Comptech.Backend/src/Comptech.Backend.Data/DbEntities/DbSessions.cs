@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Data.DbEntities
 {
-    public class DbSessions
+     class DbSessions
     {
         public int SessionId { get; set; }
         public int UserId { get; set; }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Data.DbEntities
 {
-    public class DbPulse
+     class DbPulse
     {
         public int SessionId { get; set; }
         public int Bpm { get; set; }

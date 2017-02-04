@@ -7,38 +7,39 @@ using Comptech.Backend.Data.DomainEntities;
 
 namespace Comptech.Backend.Data
 {
-    public class Converter
+    static class Converter
     {
-        public DbPhotos PhotoToDBPhotos(Photo entity)
+        static DbPhotos ToDbEntity(this Photo entity)
         {
             throw new NotImplementedException();
         }
 
-        public DbPulse PulseToDBPulse( Pulse entity)
+        static DbPulse ToDbEntity(this Pulse entity)
         {
             throw new NotImplementedException();
         }
-        public DbSessions SessionToDBSessions( Session entity)
+
+        static DbSessions ToDbEntity(this Session entity)
         {
             throw new NotImplementedException();
         }
-        public DbResults RecognitionResultsToDBResults( RecognitionResults entity)
+        static DbResults ToDbEntity(this RecognitionResults entity)
         {
             throw new NotImplementedException();
         }
-        public Photo DbPhotosToPhoto( DbPhotos entity)
+         static Photo ToDomainEntity(this DbPhotos entity)
         {
             throw new NotImplementedException();
         }
-        public Pulse DbPulseToPulse( DbPulse entity)
+        static Pulse ToDomainEntity(this DbPulse entity)
         {
             throw new NotImplementedException();
         }
-        public Session DbSessionsToSession( DbSessions entity)
+        static Session ToDomainEntity(this DbSessions entity)
         {
             throw new NotImplementedException();
         }
-        public RecognitionResults DbResultsToRecognitionResults( DbResults entity)
+        static RecognitionResults ToDomainEntity(this DbResults entity)
         {
             throw new NotImplementedException();
         }
