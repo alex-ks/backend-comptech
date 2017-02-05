@@ -14,7 +14,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
 
         public PsqlPulseRepository(ILoggerFactory loggerFactory)
         {
-            logger = loggerFactory.CreateLogger<PsqlPhotoRepository>();
+            logger = loggerFactory.CreateLogger<PsqlPulseRepository>();
         }
 
         public bool Add(Pulse entity)

@@ -13,12 +13,12 @@ namespace Comptech.Backend.Data.Repositories.Psql
             throw new NotImplementedException();
         }
 
-        public Session GetLastSessionForUser(int userId)
+        public bool Update(Session entity)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(Session entity)
+        public Session GetLastSessionForUser(int userId)
         {
             throw new NotImplementedException();
         }

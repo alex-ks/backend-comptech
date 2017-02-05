@@ -122,7 +122,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         var photos = from p in context.Photos
                                      where p.SessionId == sessionId
                                      select p;
-                        var photo = photos.OrderByDescending(d => d.TimeStamp).FirstOrDefault();
+                        var photo = photos.OrderByDescending(d => d.Timestamp).FirstOrDefault();
                         if (photo == null)
                         {
                             logger.LogWarning("Photo is not found");
