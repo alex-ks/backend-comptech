@@ -12,6 +12,7 @@ namespace Comptech.Backend.Data.DbEntities
         public byte[] Image { get; set; }
         public DateTime Timestamp { get; set; }
 
-        public DbSession DbSession { get; set; };
+        public DbSession Session { get; set; }
+        public DbResult Result { get; set; }
     }
 }

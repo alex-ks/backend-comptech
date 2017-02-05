@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Data.DomainEntities
 {
-    public class RecognitionResults
+    public class RecognitionResult
     {
         public bool IsValid { get; set; }
         public Points Coords { get; set; }

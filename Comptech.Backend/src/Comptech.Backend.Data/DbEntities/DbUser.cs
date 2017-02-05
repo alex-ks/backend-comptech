@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Data.DbEntities
 {
-    public class DbUser
+    class DbUser
     {
         public int UserId { get; set; }
         public string Login { get; set; }
+        public List<DbSession> Sessions { get; set; }
     }
 }
