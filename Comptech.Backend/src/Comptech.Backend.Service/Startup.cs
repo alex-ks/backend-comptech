@@ -50,6 +50,8 @@ namespace Comptech.Backend.Service
                     .SetAccessTokenLifetime(TimeSpan.FromMinutes(15));
 
             services.AddMvc();
+
+            services.AddSingleton<RecognitionTaskQueue>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
