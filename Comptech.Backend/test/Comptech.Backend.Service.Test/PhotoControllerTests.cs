@@ -96,6 +96,7 @@ namespace Comptech.Backend.Service.Test
                 as OkObjectResult).Value;
 
             var resultValue = result.GetType().GetProperty("SessionId").GetValue(result) as string;
+
             //Assert
             Assert.Equal<int>(0, Convert.ToInt32(resultValue));
         }

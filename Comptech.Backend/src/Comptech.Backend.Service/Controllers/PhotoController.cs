@@ -53,23 +53,25 @@ namespace Comptech.Backend.Service.Controllers
             using (_logger.BeginScope(nameof(UploadPhotoAndStartSession)))
             {
                 //validate request
-                if (photoRequest.Image == null || photoRequest.TimeStamp == null)
+                if (photoRequest == null)
                 {
-                    _logger.LogError($"Attempt to start a session because of null request.");
+                    _logger.LogError($"Attempt to start a session because of null mobile photo request.");
                     return BadRequest(new { message = "Error: something in your request is empty" });
                 }
 
                 try
                 {
                     //try start new session
-                    var session = sessionTracker.StartSession(Convert.ToInt32(userManager.GetUserId(HttpContext.User)));
+                    var session = sessionTracker.StartSession(Convert.ToInt32(userManager.GetUserId(HttpContext.User)), photoRequest.TimeStamp);
 
+                    //decrypt image and send to db
                     _logger.LogInformation($"Trying decrypt image...");
                     var decrypredImage = imageDecryptor.Decrypt(Convert.FromBase64String(photoRequest.Image));
-                    var image = new Photo(session.SessionID, decrypredImage, DateTime.UtcNow);
+                    var image = new Photo(session.SessionID, decrypredImage, photoRequest.TimeStamp);
                     _photoRepository.Add(image);
                     _logger.LogInformation($"Ecrypted image was decrypted and saved to db.");
 
+                    //send to analytics task queue
                     _logger.LogInformation($"Trying send photoId to RecognitionTaskQueue");
                     string modelName = configuration.GetSection("ModelName").Value; // get model name for analytics
                     taskQueue.Enqueue(new RecognitionTask { ModelName = modelName, PhotoId = image.PhotoID });

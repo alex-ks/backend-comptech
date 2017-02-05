@@ -21,10 +21,8 @@
     "Microsoft.AspNetCore.Mvc": "1.0.1",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Comptech.Backend.Data": "1.0.0-*",
-    "Microsoft.AspNetCore.Session": "1.1.0",
     "Microsoft.AspNetCore.Mvc.Abstractions": "1.1.1",
-    "System.Reflection": "4.3.0",
-    "Newtonsoft.Json": "9.0.1"
+    "System.Reflection": "4.3.0"
   },
 
   "tools": {

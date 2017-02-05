@@ -55,7 +55,7 @@ namespace Comptech.Backend.Service.Controllers
                         return BadRequest(errorMessage);
                     }
 
-                    Pulse pulse = new Pulse(session.SessionID, request.Pulse, request.TimeStamp);
+                    var pulse = new Pulse(session.SessionID, request.Pulse, request.TimeStamp);
                     pulseRepository.Add(pulse);
                     logger.LogInformation("Pulse of user with sessionId {0} stored in database", request.SessionId);
                     return Ok();

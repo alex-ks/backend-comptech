@@ -32,10 +32,10 @@ namespace Comptech.Backend.Service
             _sessionTimeout = TimeSpan.Parse(configuration.GetSection("SessionTimeout").Value);
             _timeoutCheckInterval = TimeSpan.Parse(configuration.GetSection("TimeoutCheckInterval").Value);
 
-            _timer = new Timer(t => RemoveTimedOut(), new object(), _timeoutCheckInterval, _timeoutCheckInterval);
+            _timer = new Timer(t => RemoveTimedOut(), null, _timeoutCheckInterval, _timeoutCheckInterval);
         }
 
-        public Session StartSession(int userId)
+        public Session StartSession(int userId, DateTime timeStamp)
         {
             var testSession = _sessionRepository.GetLastSessionForUser(userId);
             if (testSession.Status.Equals(SessionStatus.ACTIVE))
@@ -43,20 +43,14 @@ namespace Comptech.Backend.Service
                 throw new Exception($"Session {testSession.SessionID} has already been started.");
             }
 
-            try
-            {
-                var createdAt = DateTime.UtcNow;
-                var expiresAt = createdAt + _sessionTimeout;
-                var session = new Session(userId, createdAt, expiresAt, SessionStatus.ACTIVE);
-                _sessionRepository.Add(session);
-                _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
-                return session;
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-            
+            var createdAt = timeStamp;
+            var expiresAt = createdAt + _sessionTimeout;
+            var session = new Session(userId, createdAt, expiresAt, SessionStatus.ACTIVE);
+            _sessionRepository.Add(session);
+            _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
+            return session;
+
+
         }
 
         private void RemoveTimedOut()
@@ -67,13 +61,6 @@ namespace Comptech.Backend.Service
             {
                 CloseSession(s);
             }
-        }
-
-        public void SetLastActive(int sessionId)
-        {
-            var session = _sessionRepository.GetSessionById(sessionId);
-            _logger.LogInformation($"Session {sessionId} is active");
-            _sessionRepository.Update(session);
         }
 
         public void CloseSession(int sessionId)
