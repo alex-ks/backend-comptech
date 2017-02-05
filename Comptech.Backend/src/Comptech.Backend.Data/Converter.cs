@@ -20,7 +20,6 @@ namespace Comptech.Backend.Data
             };
             return photo;
         }
-
         internal static DbPulse ToDbEntity(this Pulse entity)
         {
             DbPulse pulse = new DbPulse
@@ -31,10 +30,9 @@ namespace Comptech.Backend.Data
             };
             return pulse;
         }
-
-        static DbSessions ToDbEntity(this Session entity)
+        internal static DbSession ToDbEntity(this Session entity)
         {
-             DbSession session = new DbSession
+            DbSession session = new DbSession
             {
                 SessionId = entity.SessionID,
                 UserId = entity.UserID,
@@ -45,16 +43,34 @@ namespace Comptech.Backend.Data
         }
         internal static DbResult ToDbEntity(this RecognitionResult entity)
         {
-            DbResult result = new DbResult
+            if (entity.IsValid==true)
             {
-                IsValid=entity.IsValid,
-                X1=entity.Coords.TopLeft.X,
-                X2=entity.Coords.BottomRight.X,
-                Y1=entity.Coords.TopLeft.Y,
-                Y2=entity.Coords.BottomRight.Y,
-                PhotoId=entity.PhotoID
-            };
-            return result;
+                DbResult result = new DbResult
+                {
+                    IsValid = true,
+                    X1 = entity.Coords.TopLeft.X,
+                    X2 = entity.Coords.BottomRight.X,
+                    Y1 = entity.Coords.TopLeft.Y,
+                    Y2 = entity.Coords.BottomRight.Y,
+                    PhotoId = entity.PhotoID
+                };
+
+                return result;
+            }
+            else
+            {
+                DbResult result = new DbResult
+                {
+                    IsValid = false,
+                    X1 = null,
+                    X2 = null,
+                    Y1 = null,
+                    Y2 = null,
+                    PhotoId = entity.PhotoID
+                };
+
+                return result;
+            }
         }
         internal static Photo ToDomainEntity(this DbPhoto entity)
         {
@@ -84,13 +100,37 @@ namespace Comptech.Backend.Data
                 SessionID = entity.SessionId,
                 UserID = entity.UserId,
                 Start = entity.Start,
-                //    Status = Enum.Parse(,entity.Status)
+                Status = (SessionStatus)Enum.Parse(typeof(SessionStatus),entity.Status)
             };
-            return null;
+            return session;
         }
-    internal static RecognitionResult ToDomainEntity(this DbResult entity)
+        internal static RecognitionResult ToDomainEntity(this DbResult entity)
         {
-            throw new NotImplementedException();
+            if (entity.IsValid == true)
+            {
+                RecognitionResult recognitionResult = new RecognitionResult
+                {
+                    IsValid = true,
+                    Coords = new Points
+                    {
+                        TopLeft = new Point { X = entity.X1.Value, Y = entity.Y1.Value },
+                        BottomRight = new Point { X = entity.X2.Value, Y = entity.Y2.Value }
+                    },
+                    PhotoID = entity.PhotoId
+
+                };
+                return recognitionResult;
+            }
+            else
+            {
+
+                RecognitionResult recognitionResult = new RecognitionResult
+                {
+                    IsValid = false,
+                    PhotoID = entity.PhotoId
+                };
+                return recognitionResult;
+            }
         }
     }
 }
