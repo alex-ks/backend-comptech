@@ -32,7 +32,8 @@ namespace Comptech.Backend.Service.Test
             var config = new Dictionary<string, string>()
             {
                 ["SessionTimeout"] = "00:01:00",
-                ["TimeoutCheckInterval"] = "00:00:01"
+                ["TimeoutCheckInterval"] = "00:00:01",
+                ["ModelName"] = "1"
             };
             app = new AspApplicationMockBuilder(config).Build();
             conf = app.ServiceProvider.GetRequiredService<IConfiguration>();
@@ -49,7 +50,7 @@ namespace Comptech.Backend.Service.Test
             photoRepository = repository.Of<IPhotoRepository>()
                 .Where(pr => pr.GetLastPhotoInSession(It.IsAny<int>()) == testPhoto)
                 .First();
-            
+
             return new PhotoController(new LoggerFactory(), photoRepository, sessionRepository)
             {
                 ControllerContext = new ControllerContext()
@@ -78,6 +79,7 @@ namespace Comptech.Backend.Service.Test
             testSession.SessionID = 1;
             var testPhoto = new Photo(testSession.SessionID, new byte[] { 0x20, 0x20, 0x20 }, DateTime.UtcNow);
             testPhoto.PhotoID = 2;
+
             IImageDecryptor decryptor = new ImageDecryptorTest();
             IRecognitionTaskQueue taskQueue = new RecognitionTaskQueue(new LoggerFactory());
 
@@ -87,16 +89,16 @@ namespace Comptech.Backend.Service.Test
             var result = (controller.GetSessionId(
                 new PhotoRequest("MQ==", DateTime.UtcNow),
                 app.UserManager,
-                new SessionTracker(new LoggerFactory(), sessionRepository, conf), 
-                decryptor, 
+                new SessionTracker(new LoggerFactory(), sessionRepository, conf),
+                decryptor,
                 taskQueue,
                 conf)
                 as OkObjectResult).Value;
 
-            string resultValue = result.GetType().GetProperty("sessionId").GetValue(result) as string;
+            string resultValue = result.GetType().GetProperty("SessionId").GetValue(result) as string;
 
             //Assert
-            Assert.Equal<int>(1, Convert.ToInt32(resultValue));
+            Assert.Equal<int>(0, Convert.ToInt32(resultValue));
         }
     }
 }

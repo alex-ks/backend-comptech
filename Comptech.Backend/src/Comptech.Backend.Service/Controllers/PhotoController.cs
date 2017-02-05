@@ -63,17 +63,20 @@ namespace Comptech.Backend.Service.Controllers
                 {
                     //try start new session
                     var session = sessionTracker.StartSession(Convert.ToInt32(userManager.GetUserId(HttpContext.User)));
+
                     _logger.LogInformation($"Trying decrypt image...");
                     var decrypredImage = imageDecryptor.Decrypt(Convert.FromBase64String(photoRequest.Image));
                     var image = new Photo(session.SessionID, decrypredImage, DateTime.UtcNow);
                     _photoRepository.Add(image);
                     _logger.LogInformation($"Ecrypted image was decrypted and saved to db.");
 
-                    _logger.LogInformation($"Tring send photoId to RecognitionTaskQueue");
-                    string modelName = configuration.GetSection("ModelName").Value;
+                    _logger.LogInformation($"Trying send photoId to RecognitionTaskQueue");
+                    string modelName = configuration.GetSection("ModelName").Value; // get model name for analytics
                     taskQueue.Enqueue(new RecognitionTask { ModelName = modelName, PhotoId = image.PhotoID });
-                    //photo was sent to RecognitionTasQueue
-                    return Ok(session.SessionID);
+                    _logger.LogInformation("Photo was sent to RecognitionTaskQueue");
+                    
+                    var sessionResponse = new SessionResponse { SessionId = session.SessionID };
+                    return Ok(sessionResponse);
                 }
                 catch (Exception ex)
                 {

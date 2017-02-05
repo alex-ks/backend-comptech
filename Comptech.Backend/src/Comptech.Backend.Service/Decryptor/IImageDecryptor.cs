@@ -7,6 +7,6 @@ namespace Comptech.Backend.Service.Decryptor
 {
     public interface IImageDecryptor
     {
-        byte[] Decrypt(byte[] ecnrypredImage);
+        byte[] Decrypt(byte[] encryptedImage);
     }
 }
