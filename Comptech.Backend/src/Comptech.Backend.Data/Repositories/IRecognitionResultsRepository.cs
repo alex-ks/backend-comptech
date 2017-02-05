@@ -6,8 +6,8 @@ using Comptech.Backend.Data.DomainEntities;
 
 namespace Comptech.Backend.Data.Repositories
 {
-    public interface IRecognitionResultsRepository : IRepository<RecognitionResults>
+    public interface IRecognitionResultsRepository : IRepository<RecognitionResult>
     {
-        RecognitionResults GetRecognitionResultsByPhotoId(int photoId);
+        RecognitionResult GetRecognitionResultsByPhotoId(int photoId);
     }
 }

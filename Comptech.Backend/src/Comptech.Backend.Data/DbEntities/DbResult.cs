@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Data.DbEntities
 {
-     class DbResults
+     class DbResult
     {
         public bool IsValid { get; set; }
         public int X1 { get; set; }

@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Data.DbEntities
 {
-     class DbSessions
+     class DbPhoto
     {
+        public int PhotoId { get; set; }
         public int SessionId { get; set; }
-        public int UserId { get; set; }
-        public DateTime Start { get; set; }
-        public string Status { get; set; }
+        public byte[] Image { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

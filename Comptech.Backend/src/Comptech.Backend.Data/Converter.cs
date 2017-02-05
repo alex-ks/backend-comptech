@@ -9,37 +9,86 @@ namespace Comptech.Backend.Data
 {
     static class Converter
     {
-        static DbPhotos ToDbEntity(this Photo entity)
+        internal static DbPhoto ToDbEntity(this Photo entity)
         {
-            throw new NotImplementedException();
+            DbPhoto photo = new DbPhoto
+            {
+                PhotoId = entity.PhotoID,
+                SessionId=entity.SessionID,
+                Image=entity.Image,
+                Timestamp=entity.TimeStamp
+            };
+            return photo;
         }
 
-        static DbPulse ToDbEntity(this Pulse entity)
+        internal static DbPulse ToDbEntity(this Pulse entity)
         {
-            throw new NotImplementedException();
+            DbPulse pulse = new DbPulse
+            {
+                SessionId=entity.SessionID,
+                Bpm=entity.BPM,
+                timestamp=entity.TimeStamp
+            };
+            return pulse;
         }
 
         static DbSessions ToDbEntity(this Session entity)
         {
-            throw new NotImplementedException();
+             DbSession session = new DbSession
+            {
+                SessionId = entity.SessionID,
+                UserId = entity.UserID,
+                Start = entity.Start,
+                Status = entity.Status.ToString()
+            };
+            return session;
         }
-        static DbResults ToDbEntity(this RecognitionResults entity)
+        internal static DbResult ToDbEntity(this RecognitionResult entity)
         {
-            throw new NotImplementedException();
+            DbResult result = new DbResult
+            {
+                IsValid=entity.IsValid,
+                X1=entity.Coords.TopLeft.X,
+                X2=entity.Coords.BottomRight.X,
+                Y1=entity.Coords.TopLeft.Y,
+                Y2=entity.Coords.BottomRight.Y,
+                PhotoId=entity.PhotoID
+            };
+            return result;
         }
-         static Photo ToDomainEntity(this DbPhotos entity)
+        internal static Photo ToDomainEntity(this DbPhoto entity)
         {
-            throw new NotImplementedException();
+            Photo photo = new Photo
+            {
+                PhotoID=entity.PhotoId,
+                SessionID=entity.SessionId,
+                Image=entity.Image,
+                TimeStamp=entity.Timestamp
+            };
+            return photo;
         }
-        static Pulse ToDomainEntity(this DbPulse entity)
+        internal static Pulse ToDomainEntity(this DbPulse entity)
         {
-            throw new NotImplementedException();
+            Pulse pulse = new Pulse
+            {
+                SessionID=entity.SessionId,
+                BPM=entity.Bpm,
+                TimeStamp=entity.timestamp
+            };
+            return pulse;
         }
-        static Session ToDomainEntity(this DbSessions entity)
+        internal static Session ToDomainEntity(this DbSession entity)
         {
-            throw new NotImplementedException();
+            Session session = new Session
+            {
+                SessionID = entity.SessionId,
+                UserID = entity.UserId,
+                Start = entity.Start,
+                //    Status = Enum.Parse(,entity.Status)
+            };
+            return null;
         }
-        static RecognitionResults ToDomainEntity(this DbResults entity)
+    internal static RecognitionResult ToDomainEntity(this DbResult entity)
         {
             throw new NotImplementedException();
         }
