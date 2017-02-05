@@ -43,16 +43,34 @@ namespace Comptech.Backend.Data
         }
         internal static DbResult ToDbEntity(this RecognitionResult entity)
         {
-            DbResult result = new DbResult
+            if (entity.IsValid==true)
             {
-                IsValid=entity.IsValid,
-                X1=entity.Coords.TopLeft.X,
-                X2=entity.Coords.BottomRight.X,
-                Y1=entity.Coords.TopLeft.Y,
-                Y2=entity.Coords.BottomRight.Y,
-                PhotoId=entity.PhotoID
-            };
-            return result;
+                DbResult result = new DbResult
+                {
+                    IsValid = true,
+                    X1 = entity.Coords.TopLeft.X,
+                    X2 = entity.Coords.BottomRight.X,
+                    Y1 = entity.Coords.TopLeft.Y,
+                    Y2 = entity.Coords.BottomRight.Y,
+                    PhotoId = entity.PhotoID
+                };
+
+                return result;
+            }
+            else
+            {
+                DbResult result = new DbResult
+                {
+                    IsValid = false,
+                    X1 = null,
+                    X2 = null,
+                    Y1 = null,
+                    Y2 = null,
+                    PhotoId = entity.PhotoID
+                };
+
+                return result;
+            }
         }
         internal static Photo ToDomainEntity(this DbPhoto entity)
         {
@@ -88,18 +106,31 @@ namespace Comptech.Backend.Data
         }
         internal static RecognitionResult ToDomainEntity(this DbResult entity)
         {
-            RecognitionResult recognitionResult = new RecognitionResult
+            if (entity.IsValid = true)
             {
-                IsValid = entity.IsValid,
-                Coords = new Points
+                RecognitionResult recognitionResult = new RecognitionResult
                 {
-                    TopLeft = new Point { X = entity.X1, Y = entity.Y1 },
-                    BottomRight = new Point { X = entity.X2, Y = entity.Y2 }
-                },
-                PhotoID=entity.PhotoId
-                
-            };
-            return recognitionResult;
+                    IsValid = true,
+                    Coords = new Points
+                    {
+                        TopLeft = new Point { X = entity.X1.Value, Y = entity.Y1.Value },
+                        BottomRight = new Point { X = entity.X2.Value, Y = entity.Y2.Value }
+                    },
+                    PhotoID = entity.PhotoId
+
+                };
+                return recognitionResult;
+            }
+            else
+            {
+
+                RecognitionResult recognitionResult = new RecognitionResult
+                {
+                    IsValid = false,
+                    PhotoID = entity.PhotoId
+                };
+                return recognitionResult;
+            }
         }
     }
 }

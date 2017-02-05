@@ -96,9 +96,8 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbResult>()
                 .HasOne(p => p.Photo)
-                .WithMany(p=>p.Results)
-                .HasForeignKey(p => p.PhotoId)
-                .HasPrincipalKey(p=>p.PhotoId);
+                .WithOne(p => p.Result)
+                .HasForeignKey<DbPhoto>(p => p.PhotoId);
 
             modelBuilder
                 .Entity<DbResult>()
@@ -106,23 +105,9 @@ namespace Comptech.Backend.Data
 
             modelBuilder
                 .Entity<DbResult>()
-                .Property(p => p.X1).IsRequired();
-
-            modelBuilder
-                .Entity<DbResult>()
-                .Property(p => p.X2).IsRequired();
-
-            modelBuilder
-                .Entity<DbResult>()
-                .Property(p => p.Y1).IsRequired();
-
-            modelBuilder
-                .Entity<DbResult>()
-                .Property(p => p.Y1).IsRequired();
-
-            modelBuilder
-                .Entity<DbResult>()
                 .Property(p => p.PhotoId).IsRequired();
+
+            
 
             //DbSession entity
             modelBuilder
