@@ -90,19 +90,19 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         var pulses = from p in context.Pulse
                                      where p.SessionId == sessionId
                                      select p;
-                        var pulse = pulses.OrderByDescending(d => d).FirstOrDefault();
+                        var pulse = pulses.OrderByDescending(d => d.TimeStamp).FirstOrDefault();
                         if (pulse == null)
                         {
                             logger.LogWarning("Pulse is not found");
-                            throw new Exception("Pulse of session with that ID is not found");
+                            throw new Exception("Pulses of session with that ID is not found");
                         }
                         Pulse result = pulse.ToDomainEntity();
                         logger.LogDebug("Pulse is found");
                         return result;
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        logger.LogWarning("Error");
+                        logger.LogWarning($"Exception: {e.StackTrace}");
                         throw;
                     }
                 }

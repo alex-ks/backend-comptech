@@ -96,9 +96,9 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         logger.LogDebug("PhotoID is found");
                         return photo.PhotoId;
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        logger.LogWarning("Error");
+                        logger.LogWarning($"Exception: {e.StackTrace}");
                         throw;
                     }
                 }
@@ -122,7 +122,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         var photos = from p in context.Photos
                                      where p.SessionId == sessionId
                                      select p;
-                        var photo = photos.OrderByDescending(d => d.Timestamp).FirstOrDefault();
+                        var photo = photos.OrderByDescending(d => d.TimeStamp).FirstOrDefault();
                         if (photo == null)
                         {
                             logger.LogWarning("Photo is not found");
@@ -132,9 +132,9 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         logger.LogDebug("Photo is found");
                         return result;
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        logger.LogWarning("Error");
+                        logger.LogWarning($"Exception: {e.StackTrace}");
                         throw;
                     }
                 }

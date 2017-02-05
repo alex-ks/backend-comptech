@@ -96,13 +96,12 @@ namespace Comptech.Backend.Data.Repositories.Psql
                     logger.LogDebug("RecognitionResults is found");
                     return result;
                 }
-                catch
+                catch (Exception e)
                 {
-                    logger.LogWarning("Error");
+                    logger.LogWarning($"Exception: {e.StackTrace}");
                     throw;
                 }
             }
         }
-    }
     }
 }

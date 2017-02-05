@@ -10,7 +10,7 @@ namespace Comptech.Backend.Data.DbEntities
         public int PhotoId { get; set; }
         public int SessionId { get; set; }
         public byte[] Image { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime TimeStamp { get; set; }
 
         public DbSession Session { get; set; }
         public DbResult Result { get; set; }

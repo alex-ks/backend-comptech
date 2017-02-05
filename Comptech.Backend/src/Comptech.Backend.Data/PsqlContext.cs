@@ -62,13 +62,13 @@ namespace Comptech.Backend.Data
 
             modelBuilder
                 .Entity<DbPhoto>()
-                .Property(p => p.Timestamp).IsRequired();
+                .Property(p => p.TimeStamp).IsRequired();
 
 
             //DbPulse entity
             modelBuilder
                 .Entity<DbPulse>()
-                .HasKey(p=>new {p.SessionId,p.timestamp });
+                .HasKey(p=>new {p.SessionId,p.TimeStamp });
 
             modelBuilder
                 .Entity<DbPulse>()

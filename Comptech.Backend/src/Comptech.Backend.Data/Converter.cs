@@ -16,7 +16,7 @@ namespace Comptech.Backend.Data
                 PhotoId = entity.PhotoID,
                 SessionId=entity.SessionID,
                 Image=entity.Image,
-                Timestamp=entity.TimeStamp
+                TimeStamp=entity.TimeStamp
             };
             return photo;
         }
@@ -26,7 +26,7 @@ namespace Comptech.Backend.Data
             {
                 SessionId=entity.SessionID,
                 Bpm=entity.BPM,
-                timestamp=entity.TimeStamp
+                TimeStamp=entity.TimeStamp
             };
             return pulse;
         }
@@ -79,7 +79,7 @@ namespace Comptech.Backend.Data
                 PhotoID=entity.PhotoId,
                 SessionID=entity.SessionId,
                 Image=entity.Image,
-                TimeStamp=entity.Timestamp
+                TimeStamp=entity.TimeStamp
             };
             return photo;
         }
@@ -89,7 +89,7 @@ namespace Comptech.Backend.Data
             {
                 SessionID=entity.SessionId,
                 BPM=entity.Bpm,
-                TimeStamp=entity.timestamp
+                TimeStamp=entity.TimeStamp
             };
             return pulse;
         }

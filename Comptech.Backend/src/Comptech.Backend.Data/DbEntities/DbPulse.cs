@@ -9,7 +9,7 @@ namespace Comptech.Backend.Data.DbEntities
     {
         public int SessionId { get; set; }
         public int Bpm { get; set; }
-        public DateTime timestamp { get; set; }
+        public DateTime TimeStamp { get; set; }
 
         public DbSession Session { get; set; }
 
