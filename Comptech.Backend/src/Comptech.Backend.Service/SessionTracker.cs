@@ -2,6 +2,7 @@
 using Comptech.Backend.Data.Repositories;
 using Comptech.Backend.Service.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,37 +18,52 @@ namespace Comptech.Backend.Service
         private readonly ISessionRepository _sessionRepository;
 
         private readonly TimeSpan _sessionTimeout;
+        private readonly TimeSpan _timeoutCheckInterval;
         private readonly Timer _timer;
 
         private bool _isDisposed;
 
         public SessionTracker(ILoggerFactory loggerFactory,
             ISessionRepository sessionRepository,
-            TimeSpan sessionTimeout,
-            TimeSpan timeoutCheckInterval)
+            IConfiguration configuration)
         {
             _logger = loggerFactory.CreateLogger<SessionTracker>();
             _sessionRepository = sessionRepository;
-            _sessionTimeout = sessionTimeout;
+            _sessionTimeout = TimeSpan.Parse(configuration.GetSection("SessionTimeout").Value);
+            _timeoutCheckInterval = TimeSpan.Parse(configuration.GetSection("TimeoutCheckInterval").Value);
 
-            _timer = new Timer(t => RemoveTimedOut(), new object(), timeoutCheckInterval, timeoutCheckInterval);
+            _timer = new Timer(t => RemoveTimedOut(), new object(), _timeoutCheckInterval, _timeoutCheckInterval);
         }
 
         public Session StartSession(int userId)
         {
-            var createdAt = DateTime.UtcNow;
-            var expiresAt = createdAt + _sessionTimeout;
-            var session = new Session
+            var testSession = _sessionRepository.GetLastSessionForUser(userId);
+            if (testSession.Status.Equals(SessionStatus.ACTIVE))
             {
-                UserID = userId,
-                CreatedAt = createdAt,
-                ExpiresAt = expiresAt,
-                LastActive = DateTime.UtcNow,
-                Status = SessionStatus.ACTIVE
-            };
-            _sessionRepository.Add(session);
-            _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
-            return session;
+                throw new Exception($"Session {testSession.SessionID} has already been started.");
+            }
+
+            try
+            {
+                var createdAt = DateTime.UtcNow;
+                var expiresAt = createdAt + _sessionTimeout;
+                var session = new Session
+                {
+                    UserID = userId,
+                    CreatedAt = createdAt,
+                    ExpiresAt = expiresAt,
+                    LastActive = DateTime.UtcNow,
+                    Status = SessionStatus.ACTIVE
+                };
+                _sessionRepository.Add(session);
+                _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
+                return session;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            
         }
 
         private void RemoveTimedOut()
@@ -60,7 +76,7 @@ namespace Comptech.Backend.Service
             }
         }
 
-        private void SetLastActive(int sessionId)
+        public void SetLastActive(int sessionId)
         {
             var session = _sessionRepository.GetSessionById(sessionId);
             session.LastActive = DateTime.UtcNow;
@@ -68,7 +84,7 @@ namespace Comptech.Backend.Service
             _sessionRepository.Update(session);
         }
 
-        private void CloseSession(int sessionId)
+        public void CloseSession(int sessionId)
         {
             var session = _sessionRepository.GetSessionById(sessionId);
             session.Status = SessionStatus.FINISHED;

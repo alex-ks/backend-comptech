@@ -49,10 +49,8 @@ namespace Comptech.Backend.Service
             services.AddOpenIddict<ApplicationUser, ApplicationRole, ApplicationDbContext, int>()
                     .DisableHttpsRequirement()
                     .SetAccessTokenLifetime(TimeSpan.FromMinutes(15));
-
-            var timeoutCheckInterval = JsonConvert.DeserializeObject<TimeSpan>(Configuration["TimeoutCheckInterval"]);
-            var sessionTimeout = JsonConvert.DeserializeObject<TimeSpan>(Configuration["SessionTimeout"]); 
-
+            
+            services.AddSingleton<SessionTracker>();
             services.AddMvc();
         }
         
