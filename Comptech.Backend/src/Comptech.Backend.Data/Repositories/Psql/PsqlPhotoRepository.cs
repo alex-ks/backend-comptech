@@ -52,7 +52,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
             {
                 if (entity == null)
                 {
-                    logger.LogWarning("ArgumentNullException while adding photo in DB");
+                    logger.LogWarning("ArgumentNullException while updating photo in DB");
                     throw new ArgumentNullException("Entity cannot be null");
                 }
                 using (var context = new PsqlContext())
@@ -90,7 +90,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         var photo = context.Photos.Find(sessionId);
                         if (photo == null)
                         {
-                            logger.LogWarning("Photo is null");
+                            logger.LogWarning("Photo is not found");
                             throw new Exception("Photo of session with that ID is not found");
                         }
                         logger.LogDebug("PhotoID is found");
@@ -122,15 +122,15 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         var photos = from p in context.Photos
                                      where p.SessionId == sessionId
                                      select p;
-                        var photo = photos.OrderByDescending(d => d.Timestamp).FirstOrDefault();
+                        var photo = photos.OrderByDescending(d => d.TimeStamp).FirstOrDefault();
                         if (photo == null)
                         {
-                            logger.LogWarning("Photo is null");
+                            logger.LogWarning("Photo is not found");
                             throw new Exception("Photo of session with that ID is not found");
                         }
-                        Photo dePhoto = photo.ToDomainEntity();
+                        Photo result = photo.ToDomainEntity();
                         logger.LogDebug("Photo is found");
-                        return dePhoto;
+                        return result;
                     }
                     catch
                     {
