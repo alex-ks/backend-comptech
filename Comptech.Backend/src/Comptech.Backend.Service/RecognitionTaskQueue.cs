@@ -1,97 +1,51 @@
 ﻿using Comptech.Backend.Service.Models;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Comptech.Backend.Service
 {
     public class RecognitionTaskQueue
     {
-        private static volatile RecognitionTaskQueue instance;
-        private static Object thislock = new Object();
+        private static RecognitionTaskQueue instance;
 
-        private ConcurrentQueue<RecognitionTask> queue = new ConcurrentQueue<RecognitionTask>();  
+        private BlockingCollection<RecognitionTask> queue = new BlockingCollection<RecognitionTask>(
+            new ConcurrentQueue<RecognitionTask>()
+            );
+        private readonly ILogger logger;
 
         public static RecognitionTaskQueue GetRecognitionTaskQueue()
         {
-            if(instance == null)
-            {
-                lock (thislock)
-                {
-                    if (instance == null)
-                        instance = new RecognitionTaskQueue();
-                }
-            }
+            if (instance == null)
+                instance = new RecognitionTaskQueue(new LoggerFactory());
+
             return instance;
         }
 
         public RecognitionTask Dequeue()
         {
-            if(!queue.IsEmpty)
+            RecognitionTask task = null;
+            using (logger.BeginScope(nameof(Dequeue)))
             {
-                lock(thislock)
-                {
-                    if(!queue.IsEmpty)
-                    {
-                        RecognitionTask task = null;
-                        var result = queue.TryDequeue(out task);
-                        if (result)
-                            return task;
-                        //что возвращать в случае неудачи?
-                    }
-                }
+                var result = queue.TryTake(out task);
+                if (!result)
+                    logger.LogWarning("Failed attempt to dequeue RecognitionTask from queue");
             }
-
-            //очередь пуста, возвращать нечего
-            if(queue.IsEmpty)
-            {
-                lock (thislock)
-                {
-                    if (queue.IsEmpty)
-                    {
-                        //что нужно здесь сделать?
-                    }
-                }
-            }
-
+            return task;
         }
 
         public void Enqueue(RecognitionTask task)
         {
-            //если очередь не пуста, то просто добавляем таск в очередь
-            if(!queue.IsEmpty)
+            using (logger.BeginScope(nameof(Enqueue)))
             {
-                lock(thislock)
-                {
-                    if(!queue.IsEmpty)
-                    {
-                        queue.Append(task);
-                        return;
-                    }
-                }
-            }
-
-            //если очередь пуста, то делаем что-то особенное
-            if(queue.IsEmpty)
-            {
-                lock (thislock)
-                {
-                    if (queue.IsEmpty)
-                    {
-                        //что именно здесь нужно сделать?
-
-                    }
-                }
+                var result = queue.TryAdd(task);
+                if (!result)
+                    logger.LogWarning("Failed attempt to add RecognitionTask to RecognitionTaskQueue");
             }
         }
 
-        private RecognitionTaskQueue()
+        private RecognitionTaskQueue(ILoggerFactory loggerFactory)
         {
-
+            logger = loggerFactory.CreateLogger<RecognitionTaskQueue>();
         }
     }
 }
