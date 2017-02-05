@@ -16,13 +16,15 @@ namespace Comptech.Backend.Service.Test
                 ["SessionTimeout"] = "\"00:01:00\"",
                 ["TimeoutCheckInterval"] = "\"00:00:01\""
             };
+            app = new AspApplicationMockBuilder(config).Build();
+            
         }
 
         [Fact]
         public void CanStartSession()
         {
             //Arrange
-            var sessionTracker = new SessionTracker()
+            var sessionTracker = new SessionTracker();
     
             //Act
 
