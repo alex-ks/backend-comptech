@@ -78,15 +78,8 @@ namespace Comptech.Backend.Data
 
             modelBuilder
                 .Entity<DbPulse>()
-                .Property(p => p.SessionId).IsRequired();
-
-            modelBuilder
-                .Entity<DbPulse>()
                 .Property(p => p.Bpm).IsRequired();
 
-            modelBuilder
-                .Entity<DbPulse>()
-                .Property(p => p.timestamp).IsRequired();
 
             //DbResult entity
             modelBuilder
@@ -106,8 +99,6 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbResult>()
                 .Property(p => p.PhotoId).IsRequired();
-
-            
 
             //DbSession entity
             modelBuilder
