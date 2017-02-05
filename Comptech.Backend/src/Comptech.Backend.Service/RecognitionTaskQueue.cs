@@ -8,7 +8,7 @@ namespace Comptech.Backend.Service
     {
         private static RecognitionTaskQueue instance;
 
-        private BlockingCollection<RecognitionTask> queue = new BlockingCollection<RecognitionTask>(
+        private volatile BlockingCollection<RecognitionTask> queue = new BlockingCollection<RecognitionTask>(
             new ConcurrentQueue<RecognitionTask>()
             );
         private readonly ILogger logger;
