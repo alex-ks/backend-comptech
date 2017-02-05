@@ -22,8 +22,7 @@ namespace Comptech.Backend.Service.Test
         {
             var config = new Dictionary<string, string>()
             {
-                ["SessionTimeout"] = "\"00:01:00\"",
-                ["TimeoutCheckInterval"] = "\"00:00:01\""
+                ["SettingsExamle"] = "value"
             };
             app = new AspApplicationMockBuilder(config).Build();
             // Use builder to configure services:

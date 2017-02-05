@@ -6,6 +6,7 @@ using Comptech.Backend.Service.Decryptor;
 using Comptech.Backend.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -20,19 +21,21 @@ namespace Comptech.Backend.Service.Test
     public class PhotoControllerTests
     {
         private AspApplicationMock app;
-        private IConfiguration config;
         private IPhotoRepository photoRepository;
+        private IConfiguration conf;
         private ISessionRepository sessionRepository;
         private MockRepository repository;
         private IRecognitionResultsRepository recognitionResultsRepository;
 
         public PhotoControllerTests()
         {
-            config = (IConfiguration)new Dictionary<string, string>()
+            var config = new Dictionary<string, string>()
             {
-                ["SessionTimeout"] = "\"00:01:00\"",
-                ["TimeoutCheckInterval"] = "\"00:00:01\""
+                ["SessionTimeout"] = "00:01:00",
+                ["TimeoutCheckInterval"] = "00:00:01"
             };
+            app = new AspApplicationMockBuilder(config).Build();
+            conf = app.ServiceProvider.GetRequiredService<IConfiguration>();
         }
 
         private PhotoController CreateController(Session testSession, Photo testPhoto)
@@ -47,7 +50,13 @@ namespace Comptech.Backend.Service.Test
                 .Where(pr => pr.GetLastPhotoInSession(It.IsAny<int>()) == testPhoto)
                 .First();
             
-            return new PhotoController(new LoggerFactory(), photoRepository, sessionRepository);
+            return new PhotoController(new LoggerFactory(), photoRepository, sessionRepository)
+            {
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = app.HttpContext
+                }
+            };
         }
 
         private IRecognitionResultsRepository GetRecognitionResults(MockRepository repository, RecognitionResults testRecognitionResults)
@@ -65,23 +74,23 @@ namespace Comptech.Backend.Service.Test
             await app.UserManager.CreateAsync(user, "UserTest@123");
             await app.SetUser(user);
 
-            var testSession = new Session(user.Id, DateTime.UtcNow, SessionStatus.FINISHED);
+            var testSession = new Session(user.Id, DateTime.UtcNow, DateTime.UtcNow, SessionStatus.FINISHED);
             testSession.SessionID = 1;
             var testPhoto = new Photo(testSession.SessionID, new byte[] { 0x20, 0x20, 0x20 }, DateTime.UtcNow);
             testPhoto.PhotoID = 2;
-            IImageDecryptor decryptor = new ImageDecryptor();
+            IImageDecryptor decryptor = new ImageDecryptorTest();
             IRecognitionTaskQueue taskQueue = new RecognitionTaskQueue(new LoggerFactory());
 
             //Act
             PhotoController controller = CreateController(testSession, testPhoto);
 
             var result = (controller.GetSessionId(
-                new PhotoRequest("1", DateTime.UtcNow),
+                new PhotoRequest("MQ==", DateTime.UtcNow),
                 app.UserManager,
-                new SessionTracker(new LoggerFactory(), sessionRepository, config), 
+                new SessionTracker(new LoggerFactory(), sessionRepository, conf), 
                 decryptor, 
                 taskQueue,
-                config)
+                conf)
                 as OkObjectResult).Value;
 
             string resultValue = result.GetType().GetProperty("sessionId").GetValue(result) as string;
