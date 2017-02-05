@@ -50,11 +50,10 @@ namespace Comptech.Backend.Service
                     .DisableHttpsRequirement()
                     .SetAccessTokenLifetime(TimeSpan.FromMinutes(15));
             
-            services.AddSingleton<SessionTracker>();
             services.AddMvc();
 
+            services.AddSingleton<SessionTracker>();
             services.AddSingleton(typeof(IConfiguration), Configuration);
-            //добавляем TaskRecognitionQueue в DI как сиглтон
             services.AddSingleton<RecognitionTaskQueue>();
         }
         

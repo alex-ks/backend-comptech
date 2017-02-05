@@ -43,14 +43,14 @@ namespace Comptech.Backend.Service.Controllers
         /// </summary>
         [Route("rest/photo")]
         [HttpPost]
-        public IActionResult GetSessionId([FromBody] PhotoRequest photoRequest,
+        public IActionResult UploadPhotoAndStartSession([FromBody] PhotoRequest photoRequest,
             [FromServices] UserManager<ApplicationUser> userManager,
             [FromServices] SessionTracker sessionTracker,
             [FromServices] IImageDecryptor imageDecryptor,
             [FromServices] IRecognitionTaskQueue taskQueue,
             [FromServices] IConfiguration configuration)
         {
-            using (_logger.BeginScope(nameof(GetSessionId)))
+            using (_logger.BeginScope(nameof(UploadPhotoAndStartSession)))
             {
                 //validate request
                 if (photoRequest.Image == null || photoRequest.TimeStamp == null)

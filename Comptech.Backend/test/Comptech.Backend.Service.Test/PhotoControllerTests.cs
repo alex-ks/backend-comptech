@@ -86,7 +86,7 @@ namespace Comptech.Backend.Service.Test
             //Act
             PhotoController controller = CreateController(testSession, testPhoto);
 
-            var result = (controller.GetSessionId(
+            var result = (controller.UploadPhotoAndStartSession(
                 new PhotoRequest("MQ==", DateTime.UtcNow),
                 app.UserManager,
                 new SessionTracker(new LoggerFactory(), sessionRepository, conf),
