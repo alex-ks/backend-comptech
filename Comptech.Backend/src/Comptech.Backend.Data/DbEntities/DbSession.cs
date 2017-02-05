@@ -15,6 +15,5 @@ namespace Comptech.Backend.Data.DbEntities
         public List<DbPhoto> Photos { get; set; }
         public List<DbPulse> Pulses { get; set; }
         public DbUser User { get; set; }
-
     }
 }

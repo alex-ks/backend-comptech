@@ -12,5 +12,6 @@ namespace Comptech.Backend.Data.DbEntities
         public DateTime timestamp { get; set; }
 
         public DbSession Session { get; set; }
+
     }
 }

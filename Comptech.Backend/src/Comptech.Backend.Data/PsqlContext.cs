@@ -38,6 +38,8 @@ namespace Comptech.Backend.Data
         {
             modelBuilder.Entity<DbUser>().ToTable("AspNetUsers");
 
+
+            //DbPhoto entity
             modelBuilder
                 .Entity<DbPhoto>()
                 .HasKey(p=>p.PhotoId);
@@ -45,33 +47,106 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbPhoto>()
                 .HasOne(p => p.Session)
-                .WithMany(t=>t.Photos);
+                .WithMany(t => t.Photos)
+                .HasForeignKey(p => p.SessionId)
+                .HasPrincipalKey(p => p.SessionId);
 
+            modelBuilder
+                .Entity<DbPhoto>()
+                .Property(p => p.SessionId).IsRequired();
+
+            modelBuilder
+                .Entity<DbPhoto>()
+                .Property(p => p.Image).IsRequired();
+
+            modelBuilder
+                .Entity<DbPhoto>()
+                .Property(p => p.Timestamp).IsRequired();
+
+
+            //DbPulse entity
             modelBuilder
                 .Entity<DbPulse>()
                 .HasKey(p=>new {p.SessionId,p.timestamp });
 
             modelBuilder
-                .Entity<DbPulse>().HasOne(p=>p.Session)
-                .WithMany(t=>t.Pulses);
+                .Entity<DbPulse>()
+                .HasOne(p=>p.Session)
+                .WithMany(t=>t.Pulses)
+                .HasForeignKey(p=>p.SessionId)
+                .HasPrincipalKey(p=>p.SessionId);
 
+            modelBuilder
+                .Entity<DbPulse>()
+                .Property(p => p.SessionId).IsRequired();
+
+            modelBuilder
+                .Entity<DbPulse>()
+                .Property(p => p.Bpm).IsRequired();
+
+            modelBuilder
+                .Entity<DbPulse>()
+                .Property(p => p.timestamp).IsRequired();
+
+            //DbResult entity
             modelBuilder
                 .Entity<DbResult>()
                 .HasKey(p => p.PhotoId);
 
             modelBuilder
                 .Entity<DbResult>()
-                .HasOne(p=>p.Photo)
-                .WithOne(t=>t.Result);
+                .HasOne(p => p.Photo)
+                .WithMany(p=>p.Results)
+                .HasForeignKey(p => p.PhotoId)
+                .HasPrincipalKey(p=>p.PhotoId);
 
+            modelBuilder
+                .Entity<DbResult>()
+                .Property(p => p.IsValid).IsRequired();
+
+            modelBuilder
+                .Entity<DbResult>()
+                .Property(p => p.X1).IsRequired();
+
+            modelBuilder
+                .Entity<DbResult>()
+                .Property(p => p.X2).IsRequired();
+
+            modelBuilder
+                .Entity<DbResult>()
+                .Property(p => p.Y1).IsRequired();
+
+            modelBuilder
+                .Entity<DbResult>()
+                .Property(p => p.Y1).IsRequired();
+
+            modelBuilder
+                .Entity<DbResult>()
+                .Property(p => p.PhotoId).IsRequired();
+
+            //DbSession entity
             modelBuilder
                 .Entity<DbSession>()
                 .HasKey(p => p.SessionId);
 
             modelBuilder
                 .Entity<DbSession>()
-                .HasOne(p=>p.DbUser)
-                .WithMany(t=>t.Sessions);
+                .HasOne(p=>p.User)
+                .WithMany(t=>t.Sessions)
+                .HasForeignKey(p=>p.UserId)
+                .HasPrincipalKey(p=>p.UserId);
+
+            modelBuilder
+                .Entity<DbSession>()
+                .Property(p => p.UserId).IsRequired();
+
+            modelBuilder
+                .Entity<DbSession>()
+                .Property(p => p.Start).IsRequired();
+
+            modelBuilder
+                .Entity<DbSession>()
+                .Property(p => p.Status).IsRequired();
 
             base.OnModelCreating(modelBuilder);
 

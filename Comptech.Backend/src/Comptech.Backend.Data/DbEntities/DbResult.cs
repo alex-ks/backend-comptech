@@ -15,5 +15,6 @@ namespace Comptech.Backend.Data.DbEntities
         public int PhotoId { get; set; }
 
         public DbPhoto Photo { get; set; }
+
     }
 }

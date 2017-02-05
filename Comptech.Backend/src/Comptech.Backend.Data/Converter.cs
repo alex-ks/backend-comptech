@@ -20,7 +20,6 @@ namespace Comptech.Backend.Data
             };
             return photo;
         }
-
         internal static DbPulse ToDbEntity(this Pulse entity)
         {
             DbPulse pulse = new DbPulse
@@ -31,7 +30,6 @@ namespace Comptech.Backend.Data
             };
             return pulse;
         }
-
         internal static DbSession ToDbEntity(this Session entity)
         {
             DbSession session = new DbSession
@@ -84,12 +82,24 @@ namespace Comptech.Backend.Data
                 SessionID = entity.SessionId,
                 UserID = entity.UserId,
                 Start = entity.Start,
-                Status = Enum.Parse(,entity.Status)
+                Status = (SessionStatus)Enum.Parse(typeof(SessionStatus),entity.Status)
             };
+            return session;
         }
-    internal static RecognitionResult ToDomainEntity(this DbResult entity)
+        internal static RecognitionResult ToDomainEntity(this DbResult entity)
         {
-            throw new NotImplementedException();
+            RecognitionResult recognitionResult = new RecognitionResult
+            {
+                IsValid = entity.IsValid,
+                Coords = new Points
+                {
+                    TopLeft = new Point { X = entity.X1, Y = entity.Y1 },
+                    BottomRight = new Point { X = entity.X2, Y = entity.Y2 }
+                },
+                PhotoID=entity.PhotoId
+                
+            };
+            return recognitionResult;
         }
     }
 }

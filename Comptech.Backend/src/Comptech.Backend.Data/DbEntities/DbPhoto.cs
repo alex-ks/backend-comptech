@@ -13,6 +13,6 @@ namespace Comptech.Backend.Data.DbEntities
         public DateTime Timestamp { get; set; }
 
         public DbSession Session { get; set; }
-        public DbResult Result { get; set; }
-    }
+        public List<DbResult> Results { get; set; }
+}
 }
