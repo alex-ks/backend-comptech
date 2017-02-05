@@ -11,5 +11,10 @@ namespace Comptech.Backend.Service.Decryptor
         {
             throw new NotImplementedException();
         }
+
+        public byte[] DecryptTest(byte[] testImage)
+        {
+            return testImage;
+        }
     }
 }

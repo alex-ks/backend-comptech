@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Comptech.Backend.Service
 {
-    public interface RecognitionTaskGueue
+    public interface IRecognitionTaskQueue
     {
         void Enqueue(RecognitionTask task);
         RecognitionTask Dequeue();

@@ -47,13 +47,7 @@ namespace Comptech.Backend.Service
             {
                 var createdAt = DateTime.UtcNow;
                 var expiresAt = createdAt + _sessionTimeout;
-                var session = new Session
-                {
-                    UserID = userId,
-                    Start = createdAt,
-                    ExpiresAt = expiresAt,
-                    Status = SessionStatus.ACTIVE
-                };
+                var session = new Session(userId, createdAt, expiresAt, SessionStatus.ACTIVE);
                 _sessionRepository.Add(session);
                 _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
                 return session;

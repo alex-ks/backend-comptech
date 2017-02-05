@@ -1,6 +1,8 @@
-﻿using Comptech.Backend.Data.Repositories;
+﻿using Comptech.Backend.Data.DomainEntities;
+using Comptech.Backend.Data.Repositories;
 using Comptech.Backend.Service.Controllers;
 using Comptech.Backend.Service.Data;
+using Comptech.Backend.Service.Decryptor;
 using Comptech.Backend.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +11,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,6 +21,10 @@ namespace Comptech.Backend.Service.Test
     {
         private AspApplicationMock app;
         private IConfiguration config;
+        private IPhotoRepository photoRepository;
+        private ISessionRepository sessionRepository;
+        private MockRepository repository;
+        private IRecognitionResultsRepository recognitionResultsRepository;
 
         public PhotoControllerTests()
         {
@@ -28,9 +35,26 @@ namespace Comptech.Backend.Service.Test
             };
         }
 
-        private PhotoController CreatePhotoController()
+        private PhotoController CreateController(Session testSession, Photo testPhoto)
         {
+            repository = new MockRepository(MockBehavior.Default);
 
+            sessionRepository = repository.Of<ISessionRepository>()
+                .Where(sr => sr.GetLastSessionForUser(It.IsAny<int>()) == testSession)
+                .First();
+
+            photoRepository = repository.Of<IPhotoRepository>()
+                .Where(pr => pr.GetLastPhotoInSession(It.IsAny<int>()) == testPhoto)
+                .First();
+            
+            return new PhotoController(new LoggerFactory(), photoRepository, sessionRepository);
+        }
+
+        private IRecognitionResultsRepository GetRecognitionResults(MockRepository repository, RecognitionResults testRecognitionResults)
+        {
+            return recognitionResultsRepository = repository.Of<IRecognitionResultsRepository>()
+                .Where(rr => rr.GetRecognitionResultsByPhotoId(It.IsAny<int>()) == testRecognitionResults)
+                .First();
         }
 
         [Fact]
@@ -41,16 +65,29 @@ namespace Comptech.Backend.Service.Test
             await app.UserManager.CreateAsync(user, "UserTest@123");
             await app.SetUser(user);
 
-            PhotoController controller = CreatePhotoController();
+            var testSession = new Session(user.Id, DateTime.UtcNow, SessionStatus.FINISHED);
+            testSession.SessionID = 1;
+            var testPhoto = new Photo(testSession.SessionID, new byte[] { 0x20, 0x20, 0x20 }, DateTime.UtcNow);
+            testPhoto.PhotoID = 2;
+            IImageDecryptor decryptor = new ImageDecryptor();
+            IRecognitionTaskQueue taskQueue = new RecognitionTaskQueue(new LoggerFactory());
 
-            var result = (await controller.GetSessionId(new
-                PhotoRequest("1", DateTime.UtcNow),
+            //Act
+            PhotoController controller = CreateController(testSession, testPhoto);
+
+            var result = (controller.GetSessionId(
+                new PhotoRequest("1", DateTime.UtcNow),
                 app.UserManager,
-                new SessionTracker(new LoggerFactory(), sessionRepository, config), decryptor, taskQueue
-                ) as OkObjectResult).Value;
-            // result has anonymous type so we can only use reflection to get value
-            string name = result.GetType().GetProperty("sessionId").GetValue(result) as string;
-            Assert.Equal(user.UserName, name);
+                new SessionTracker(new LoggerFactory(), sessionRepository, config), 
+                decryptor, 
+                taskQueue,
+                config)
+                as OkObjectResult).Value;
+
+            string resultValue = result.GetType().GetProperty("sessionId").GetValue(result) as string;
+
+            //Assert
+            Assert.Equal<int>(1, Convert.ToInt32(resultValue));
         }
     }
 }

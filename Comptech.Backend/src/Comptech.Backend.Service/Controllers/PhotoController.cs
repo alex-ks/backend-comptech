@@ -47,7 +47,7 @@ namespace Comptech.Backend.Service.Controllers
             [FromServices] UserManager<ApplicationUser> userManager,
             [FromServices] SessionTracker sessionTracker,
             [FromServices] IImageDecryptor imageDecryptor,
-            [FromServices] RecognitionTaskGueue taskQueue,
+            [FromServices] IRecognitionTaskQueue taskQueue,
             [FromServices] IConfiguration configuration)
         {
             using (_logger.BeginScope(nameof(GetSessionId)))
@@ -65,18 +65,13 @@ namespace Comptech.Backend.Service.Controllers
                     var session = sessionTracker.StartSession(Convert.ToInt32(userManager.GetUserId(HttpContext.User)));
                     _logger.LogInformation($"Trying decrypt image...");
                     var decrypredImage = imageDecryptor.Decrypt(Convert.FromBase64String(photoRequest.Image));
-                    var image = new Photo
-                    {
-                        Image = decrypredImage,
-                        SessionID = session.SessionID,
-                        TimeStamp = photoRequest.TimeStamp
-                    };
+                    var image = new Photo(session.SessionID, decrypredImage, DateTime.UtcNow);
                     _photoRepository.Add(image);
                     _logger.LogInformation($"Ecrypted image was decrypted and saved to db.");
 
                     _logger.LogInformation($"Tring send photoId to RecognitionTaskQueue");
                     string modelName = configuration.GetSection("ModelName").Value;
-                    taskQueue.Enqueue(new RecognitionTask { PhotoId = image.PhotoID, modelName = modelName });
+                    taskQueue.Enqueue(new RecognitionTask { ModelName = modelName, PhotoId = image.PhotoID });
                     //photo was sent to RecognitionTasQueue
                     return Ok(session.SessionID);
                 }
