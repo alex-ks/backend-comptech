@@ -40,6 +40,11 @@ namespace Comptech.Backend.Service.Controllers
                     var session = 
                         sessionRepository.GetLastSessionForUser(int.Parse(await userManager.GetUserIdAsync(user)));
 
+                    if (null == session)
+                    {
+                        return BadRequest("User has no sessions");
+                    }
+
                     var photo = photoRepository.GetLastPhotoInSession(session.SessionID);
                     var recognitionResults = recognitionResultsRepository.GetRecognitionResultsByPhotoId(photo.PhotoID);
                     
