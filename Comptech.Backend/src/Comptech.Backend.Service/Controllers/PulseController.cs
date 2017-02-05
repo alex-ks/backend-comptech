@@ -30,7 +30,7 @@ namespace Comptech.Backend.Service.Controllers
 
         [Route("rest/bpm")]
         [HttpPost]
-        public async Task<IActionResult> AcceptPulse([FromBody] AcceptPulseRequest request,
+        public IActionResult AcceptPulse([FromBody] AcceptPulseRequest request,
                                                      [FromServices] IConfiguration configuration)
         {
             using (logger.BeginScope(nameof(AcceptPulse)))
@@ -39,9 +39,7 @@ namespace Comptech.Backend.Service.Controllers
                 logger.LogInformation("User tries to save pulse");
                 try
                 {
-                    var user = await userManager.GetUserAsync(HttpContext.User);
-                    var userId = await userManager.GetUserIdAsync(user);
-                    var session = sessionRepository.GetLastSessionForUser(int.Parse(userId));
+                    var session = sessionRepository.GetLastSessionForUser(request.SessionId);
                     if (session.Status == SessionStatus.ACTIVE)
                     {
                         var sessionLenght = TimeSpan.FromSeconds(int.Parse(
@@ -53,12 +51,12 @@ namespace Comptech.Backend.Service.Controllers
                             pulse.TimeStamp = request.TimeStamp;
                             pulse.BPM = request.Pulse;
                             pulseRepository.Add(pulse);
-                            logger.LogInformation("User {0} sent pulse", userId);
+                            logger.LogInformation("Pulse of user with sessionId {0} stored in database", request.SessionId);
                             return Ok();
                         }
                         else
                         {
-                            logger.LogInformation("Users {0} session is ended", userId);
+                            logger.LogInformation("Session of user with sessionId {0} is ended", request.SessionId);
                             session.Status = SessionStatus.FINISHED;
                             sessionRepository.Update(session);
                             return Forbid();
@@ -66,7 +64,7 @@ namespace Comptech.Backend.Service.Controllers
                     }
                     else
                     {
-                        logger.LogInformation("Users {0} session is ended", userId);
+                        logger.LogInformation("Session of user with sessionId {0} is ended", request.SessionId);
                         return Forbid();
                     }
 
@@ -78,15 +76,49 @@ namespace Comptech.Backend.Service.Controllers
                 }
             }
         }
-        /*
+
         [Route("rest/pulse")]
         [HttpGet]
-        public async Task<IActionResult> SendPulse()
+        public async Task<IActionResult> SendPulse([FromServices] IConfiguration configuration)
         {
             using (logger.BeginScope(nameof(SendPulse)))
             {
                 logger.LogInformation("Pulse sent");
+                try
+                {
+                    var user = await userManager.GetUserAsync(HttpContext.User);
+                    var userId = await userManager.GetUserIdAsync(user);
+                    var session = sessionRepository.GetLastSessionForUser(int.Parse(userId));
+                    if (session.Status == SessionStatus.ACTIVE)
+                    {
+                        var sessionLenght = TimeSpan.FromSeconds(int.Parse(
+                                configuration.GetSection("SessionLenght").Value));
+                        if ((DateTime.Now - session.Start) < sessionLenght)
+                        {
+                            var lastPulse = pulseRepository.GetLastPulseInSession(session.SessionID);
+                            logger.LogInformation("User {0} sent pulse", userId);
+                            return Ok(new { pulse = lastPulse.BPM, state = "yes" });
+                        }
+                        else
+                        {
+                            logger.LogInformation("Users {0} session is ended", userId);
+                            session.Status = SessionStatus.FINISHED;
+                            sessionRepository.Update(session);
+                            return Ok(new { pulse = -1, state = "no" });
+                        }
+                    }
+                    else
+                    {
+                        logger.LogInformation("Users {0} session is ended", userId);
+                        return Ok(new { pulse = -1, state = "no" });
+                    }
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError("Exception caught: {0}, {1}", exception.Message, exception.StackTrace);
+                    return BadRequest(exception.Message);
+                }
             }
-        }*/
+        }
     }
 }

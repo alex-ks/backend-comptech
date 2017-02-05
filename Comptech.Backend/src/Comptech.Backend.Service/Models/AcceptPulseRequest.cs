@@ -12,5 +12,7 @@ namespace Comptech.Backend.Service.Models
         public int Pulse { get; set; }
         [DataMember(Name = "timestamp")]
         public DateTime TimeStamp { get; set; }
+        [DataMember(Name = "sessionId")]
+        public int SessionId { get; set; }
     }
 }
