@@ -27,7 +27,7 @@ namespace Comptech.Backend.Service.Controllers
             this.userManager = userManager;
             this.sessionRepository = sessionRepository;
             this.repository = repository;
-            logger = loggerFactory.CreateLogger<UserController>();
+            logger = loggerFactory.CreateLogger<SessionController>();
         }
 
         [Route("/rest/finished")]
