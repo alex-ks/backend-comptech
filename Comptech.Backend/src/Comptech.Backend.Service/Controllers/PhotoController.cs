@@ -74,10 +74,10 @@ namespace Comptech.Backend.Service.Controllers
                     //send to analytics task queue
                     _logger.LogInformation($"Trying send photoId to RecognitionTaskQueue");
                     string modelName = configuration.GetSection("ModelName").Value; // get model name for analytics
-                    taskQueue.Enqueue(new RecognitionTask { ModelName = modelName, PhotoId = image.PhotoID });
+                    taskQueue.Enqueue(new RecognitionTask(modelName, image.PhotoID));
                     _logger.LogInformation("Photo was sent to RecognitionTaskQueue");
-                    
-                    var sessionResponse = new SessionResponse { SessionId = session.SessionID };
+
+                    var sessionResponse = new SessionResponse(session.SessionID);
                     return Ok(sessionResponse);
                 }
                 catch (Exception ex)

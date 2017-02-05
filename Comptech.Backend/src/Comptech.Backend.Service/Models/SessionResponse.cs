@@ -10,5 +10,10 @@ namespace Comptech.Backend.Service.Models
     {
         [DataMember(Name = "sessionId")]
         public int SessionId { get; set; }
+
+        public SessionResponse(int sessionId)
+        {
+            SessionId = sessionId;
+        }
     }
 }

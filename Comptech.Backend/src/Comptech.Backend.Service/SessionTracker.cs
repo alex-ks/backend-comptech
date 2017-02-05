@@ -16,6 +16,7 @@ namespace Comptech.Backend.Service
     {
         private readonly ILogger _logger;
         private readonly ISessionRepository _sessionRepository;
+        private readonly SessionValidator _sessionValidator;
 
         private readonly TimeSpan _sessionTimeout;
         private readonly TimeSpan _timeoutCheckInterval;
@@ -25,10 +26,12 @@ namespace Comptech.Backend.Service
 
         public SessionTracker(ILoggerFactory loggerFactory,
             ISessionRepository sessionRepository,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            SessionValidator sessionValidator)
         {
             _logger = loggerFactory.CreateLogger<SessionTracker>();
             _sessionRepository = sessionRepository;
+            _sessionValidator = sessionValidator;
             _sessionTimeout = TimeSpan.Parse(configuration.GetSection("SessionTimeout").Value);
             _timeoutCheckInterval = TimeSpan.Parse(configuration.GetSection("TimeoutCheckInterval").Value);
 
@@ -38,9 +41,10 @@ namespace Comptech.Backend.Service
         public Session StartSession(int userId, DateTime timeStamp)
         {
             var testSession = _sessionRepository.GetLastSessionForUser(userId);
-            if (testSession.Status.Equals(SessionStatus.ACTIVE))
+            string errorMessage;
+            if (_sessionValidator.IsActiveSession(testSession, out errorMessage))
             {
-                throw new Exception($"Session {testSession.SessionID} has already been started.");
+                throw new Exception($"{errorMessage}");
             }
 
             var createdAt = timeStamp;
@@ -49,8 +53,6 @@ namespace Comptech.Backend.Service
             _sessionRepository.Add(session);
             _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
             return session;
-
-
         }
 
         private void RemoveTimedOut()
@@ -69,7 +71,6 @@ namespace Comptech.Backend.Service
             session.Status = SessionStatus.FINISHED;
             _sessionRepository.Update(session);
             _logger.LogInformation($"Session {sessionId} is finished");
-
         }
 
         public void Dispose()

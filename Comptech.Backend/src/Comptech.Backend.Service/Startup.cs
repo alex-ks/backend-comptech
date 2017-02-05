@@ -52,6 +52,7 @@ namespace Comptech.Backend.Service
             
             services.AddMvc();
 
+            services.AddTransient<SessionValidator>();
             services.AddSingleton<SessionTracker>();
             services.AddSingleton(typeof(IConfiguration), Configuration);
             services.AddSingleton<RecognitionTaskQueue>();

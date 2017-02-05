@@ -60,7 +60,8 @@ namespace Comptech.Backend.Service.Test
             };
         }
 
-        private IRecognitionResultsRepository GetRecognitionResults(MockRepository repository, RecognitionResults testRecognitionResults)
+        private IRecognitionResultsRepository GetRecognitionResults(MockRepository repository, 
+            RecognitionResults testRecognitionResults)
         {
             return recognitionResultsRepository = repository.Of<IRecognitionResultsRepository>()
                 .Where(rr => rr.GetRecognitionResultsByPhotoId(It.IsAny<int>()) == testRecognitionResults)
@@ -89,7 +90,7 @@ namespace Comptech.Backend.Service.Test
             var result = (controller.UploadPhotoAndStartSession(
                 new PhotoRequest("MQ==", DateTime.UtcNow),
                 app.UserManager,
-                new SessionTracker(new LoggerFactory(), sessionRepository, conf),
+                new SessionTracker(new LoggerFactory(), sessionRepository, conf, new SessionValidator(new LoggerFactory())),
                 decryptor,
                 taskQueue,
                 conf)
