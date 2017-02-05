@@ -22,7 +22,8 @@ namespace Comptech.Backend.Service.Test
         {
             var config = new Dictionary<string, string>()
             {
-                ["SettingsExamle"] = "value"
+                ["SessionTimeout"] = "\"00:01:00\"",
+                ["TimeoutCheckInterval"] = "\"00:00:01\""
             };
             app = new AspApplicationMockBuilder(config).Build();
             // Use builder to configure services:
@@ -58,7 +59,7 @@ namespace Comptech.Backend.Service.Test
             await app.SetUser(user);
 
             UserController controller = CreateController();
-            
+
             var result = (await controller.GetUserName() as OkObjectResult).Value;
             // result has anonymous type so we can only use reflection to get value
             string name = result.GetType().GetProperty("userName").GetValue(result) as string;

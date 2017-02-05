@@ -50,9 +50,8 @@ namespace Comptech.Backend.Service
                 var session = new Session
                 {
                     UserID = userId,
-                    CreatedAt = createdAt,
+                    Start = createdAt,
                     ExpiresAt = expiresAt,
-                    LastActive = DateTime.UtcNow,
                     Status = SessionStatus.ACTIVE
                 };
                 _sessionRepository.Add(session);
@@ -68,7 +67,7 @@ namespace Comptech.Backend.Service
 
         private void RemoveTimedOut()
         {
-            var sessionIds = _sessionRepository.GetAllTimedOut(_sessionTimeout);
+            var sessionIds = _sessionRepository.GetAllTimedOut();
             _logger.LogInformation($"Timedout: {string.Join(", ", sessionIds)}");
             foreach (var s in sessionIds)
             {
@@ -79,7 +78,6 @@ namespace Comptech.Backend.Service
         public void SetLastActive(int sessionId)
         {
             var session = _sessionRepository.GetSessionById(sessionId);
-            session.LastActive = DateTime.UtcNow;
             _logger.LogInformation($"Session {sessionId} is active");
             _sessionRepository.Update(session);
         }

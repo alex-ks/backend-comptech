@@ -23,33 +23,18 @@ namespace Comptech.Backend.Service.Controllers
     {
         #region Fields
         private readonly ILogger _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPhotoRepository _photoRepository;
         private readonly ISessionRepository _sessionRepository;
-        private readonly IImageDecryptor _imageDecryptor;
-        private readonly SessionTracker _sessionTracker;
-        private readonly RecognitionTaskGueue _taskQueue;
-        private readonly IConfiguration _configuration;
         #endregion
 
         #region Ctor
-        public PhotoController(UserManager<ApplicationUser> userManager,
-                               ILoggerFactory loggerFactory,
-                               IPhotoRepository photoRepository,
-                               ISessionRepository sessionRepository,
-                               IImageDecryptor imageDecryptor,
-                               SessionTracker sessionTracker,
-                               RecognitionTaskGueue taskQueue,
-                               IConfiguration configuration)
+        public PhotoController(ILoggerFactory loggerFactory,
+                               IPhotoRepository photoRepository, 
+                               ISessionRepository sessionRepository)
         {
-            _userManager = userManager;
             _logger = loggerFactory.CreateLogger<UserController>();
             _photoRepository = photoRepository;
             _sessionRepository = sessionRepository;
-            _imageDecryptor = imageDecryptor;
-            _sessionTracker = sessionTracker;
-            _taskQueue = taskQueue;
-            _configuration = configuration;
         }
         #endregion
 
@@ -58,7 +43,12 @@ namespace Comptech.Backend.Service.Controllers
         /// </summary>
         [Route("rest/photo")]
         [HttpPost]
-        public IActionResult GetSessionId([FromBody] PhotoRequest photoRequest)
+        public IActionResult GetSessionId([FromBody] PhotoRequest photoRequest,
+            [FromServices] UserManager<ApplicationUser> userManager,
+            [FromServices] SessionTracker sessionTracker,
+            [FromServices] IImageDecryptor imageDecryptor,
+            [FromServices] RecognitionTaskGueue taskQueue,
+            [FromServices] IConfiguration configuration)
         {
             using (_logger.BeginScope(nameof(GetSessionId)))
             {
@@ -72,9 +62,9 @@ namespace Comptech.Backend.Service.Controllers
                 try
                 {
                     //try start new session
-                    var session = _sessionTracker.StartSession(Convert.ToInt32(_userManager.GetUserId(HttpContext.User)));
+                    var session = sessionTracker.StartSession(Convert.ToInt32(userManager.GetUserId(HttpContext.User)));
                     _logger.LogInformation($"Trying decrypt image...");
-                    var decrypredImage = _imageDecryptor.Decrypt(Convert.FromBase64String(photoRequest.Image));
+                    var decrypredImage = imageDecryptor.Decrypt(Convert.FromBase64String(photoRequest.Image));
                     var image = new Photo
                     {
                         Image = decrypredImage,
@@ -85,8 +75,8 @@ namespace Comptech.Backend.Service.Controllers
                     _logger.LogInformation($"Ecrypted image was decrypted and saved to db.");
 
                     _logger.LogInformation($"Tring send photoId to RecognitionTaskQueue");
-                    string modelName = _configuration.GetSection("ModelName").Value;
-                    _taskQueue.Enqueue(new RecognitionTask { PhotoId = image.PhotoID, modelName = modelName });
+                    string modelName = configuration.GetSection("ModelName").Value;
+                    taskQueue.Enqueue(new RecognitionTask { PhotoId = image.PhotoID, modelName = modelName });
                     //photo was sent to RecognitionTasQueue
                     return Ok(session.SessionID);
                 }

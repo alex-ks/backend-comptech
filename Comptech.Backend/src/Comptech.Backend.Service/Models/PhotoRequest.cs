@@ -13,5 +13,11 @@ namespace Comptech.Backend.Service.Models
 
         [DataMember(Name ="timestamp")]
         public DateTime TimeStamp { get; set; }
+
+        public PhotoRequest(string image, DateTime timeStamp)
+        {
+            Image = image;
+            TimeStamp = timeStamp;
+        }
     }
 }
