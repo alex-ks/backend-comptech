@@ -7,7 +7,7 @@ namespace Comptech.Backend.Service.Models
     {
         [DataMember(Name = "modelName")]
         public string ModelName { get; set; }
-        [DataMember(Name = "photo")]
-        public string Photo { get; set; }
+        [DataMember(Name = "photoId")]
+        public int PhotoId { get; set; }
     }
 }
