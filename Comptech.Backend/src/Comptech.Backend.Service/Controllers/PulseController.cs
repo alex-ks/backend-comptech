@@ -43,8 +43,8 @@ namespace Comptech.Backend.Service.Controllers
                     if (session.Status == SessionStatus.ACTIVE)
                     {
                         var sessionLenght = TimeSpan.FromSeconds(int.Parse(
-                                configuration.GetSection("SessionLenght").Value));
-                        if ((DateTime.Now - session.Start) < sessionLenght)
+                                configuration.GetSection("SessionLength").Value));
+                        if ((DateTime.UtcNow- session.Start) < sessionLenght)
                         {
                             Pulse pulse = new Pulse();
                             pulse.SessionID = session.SessionID;
@@ -92,8 +92,8 @@ namespace Comptech.Backend.Service.Controllers
                     if (session.Status == SessionStatus.ACTIVE)
                     {
                         var sessionLenght = TimeSpan.FromSeconds(int.Parse(
-                                configuration.GetSection("SessionLenght").Value));
-                        if ((DateTime.Now - session.Start) < sessionLenght)
+                                configuration.GetSection("SessionLength").Value));
+                        if ((DateTime.UtcNow - session.Start) < sessionLenght)
                         {
                             var lastPulse = pulseRepository.GetLastPulseInSession(session.SessionID);
                             logger.LogInformation("User {0} sent pulse", userId);
