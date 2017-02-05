@@ -1,5 +1,7 @@
 ﻿using Comptech.Backend.Service.Data;
 using Comptech.Backend.Service.Models;
+using Comptech.Backend.Data.DomainEntities;
+using Comptech.Backend.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,14 +26,57 @@ namespace Comptech.Backend.Service.Controllers
             logger = loggerFactory.CreateLogger<UserController>();
         }
 
-        [Route("rest/faces")]
+        [Route("rest/photo")]
         [HttpGet]
-        public IActionResult GetPhoto()
+        public async Task<IActionResult> GetPhoto([FromServices] IPhotoRepository photoRepository,
+                                                  [FromServices] ISessionRepository sessionRepository,
+                                                  [FromServices] IRecognitionResultsRepository recognitionResultsRepository)
         {
             using (logger.BeginScope(nameof(GetPhoto)))
             {
-                logger.LogInformation("Send Photo");
-                return Ok();
+                logger.LogInformation("Frontend tries to get photo");
+                try {
+                    var user = await userManager.GetUserAsync(HttpContext.User);
+                    var session = 
+                        sessionRepository.GetLastSessionForUser(int.Parse(await userManager.GetUserIdAsync(user)));
+
+                    var photo = photoRepository.GetLastPhotoInSession(session.SessionID);
+                    var recognitionResults = recognitionResultsRepository.GetRecognitionResultsByPhotoId(photo.PhotoID);
+                    
+                    var recRes = (null == recognitionResults) 
+                    ?
+                    null
+                    :
+                    new 
+                    {
+                        valid = recognitionResults.IsValid,
+                        coordinates = new 
+                        {
+                            topLeft = new 
+                            {
+                                x = recognitionResults.Coords.TopLeft.X,
+                                y = recognitionResults.Coords.TopLeft.Y
+                            },
+                            bottomRight = new 
+                            {
+                                x = recognitionResults.Coords.BottomRight.X,
+                                y = recognitionResults.Coords.BottomRight.Y
+                            }
+                        }
+                    };
+
+                    return Ok(new 
+                        {
+                            photo = System.Convert.ToBase64String(photo.Image),
+                            recognitionResults = recRes
+                        }
+                    );
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError("Exception caught: {0}, {1}", exception.Message, exception.StackTrace);
+                    return BadRequest(exception.Message);
+                }
             }
         } 
     }
