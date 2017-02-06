@@ -12,8 +12,6 @@ namespace Comptech.Backend.Data.DbEntities
         public DateTime Start { get; set; }
         public string Status { get; set; }
 
-        public List<DbPhoto> Photos { get; set; }
-        public List<DbPulse> Pulses { get; set; }
         public DbUser User { get; set; }
     }
 }

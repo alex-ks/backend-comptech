@@ -71,9 +71,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         _logger.LogWarning("Entity to update was not found, Update failed");
                         return false;
                     }
-
-                    oldEntity.Photos = dbEntity.Photos;
-                    oldEntity.Pulses = dbEntity.Pulses;
+                    
                     oldEntity.Start = dbEntity.Start;
                     oldEntity.Status = dbEntity.Status;
 

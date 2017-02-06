@@ -14,8 +14,6 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Comptech.Backend.Service", 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Comptech.Backend.Data", "src\Comptech.Backend.Data\Comptech.Backend.Data.xproj", "{CFF62C92-8988-4E4A-8BEB-B8D691068410}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Comptech.Backend.DirtyTest", "src\Comptech.Backend.DirtyTest\Comptech.Backend.DirtyTest.xproj", "{E1334A1E-B2C6-40AC-9451-80679B09066D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,10 +28,6 @@ Global
 		{CFF62C92-8988-4E4A-8BEB-B8D691068410}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFF62C92-8988-4E4A-8BEB-B8D691068410}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFF62C92-8988-4E4A-8BEB-B8D691068410}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1334A1E-B2C6-40AC-9451-80679B09066D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1334A1E-B2C6-40AC-9451-80679B09066D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1334A1E-B2C6-40AC-9451-80679B09066D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1334A1E-B2C6-40AC-9451-80679B09066D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +35,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FE226C11-2F0C-495F-B3F9-68DC06F3DB93} = {0DE59585-AAD6-4375-8BAF-CEFA58C65D3F}
 		{CFF62C92-8988-4E4A-8BEB-B8D691068410} = {0DE59585-AAD6-4375-8BAF-CEFA58C65D3F}
-		{E1334A1E-B2C6-40AC-9451-80679B09066D} = {0DE59585-AAD6-4375-8BAF-CEFA58C65D3F}
 	EndGlobalSection
 EndGlobal

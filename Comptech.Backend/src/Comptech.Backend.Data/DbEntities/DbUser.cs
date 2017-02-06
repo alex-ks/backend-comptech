@@ -9,7 +9,5 @@ namespace Comptech.Backend.Data.DbEntities
     {
         public int UserId { get; set; }
         public string Login { get; set; }
-
-        public List<DbSession> Sessions { get; set; }
     }
 }

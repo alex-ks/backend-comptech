@@ -32,13 +32,13 @@ namespace Comptech.Backend.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            optionBuilder.UseInMemoryDatabase("JajaBase");//Npgsql(_connectionString);
+            optionBuilder.UseNpgsql(_connectionString);
         }
          protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .Entity<DbUser>()
-                .HasKey(u => u.UserId);//.ToTable("AspNetUsers");
+                .ToTable("AspNetUsers");
 
             //DbPhoto entity
             modelBuilder
@@ -48,7 +48,7 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbPhoto>()
                 .HasOne(p => p.Session)
-                .WithMany(t => t.Photos)
+                .WithMany()
                 .HasForeignKey(p => p.SessionId)
                 .HasPrincipalKey(p => p.SessionId);
 
@@ -73,7 +73,7 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbPulse>()
                 .HasOne(p=>p.Session)
-                .WithMany(t=>t.Pulses)
+                .WithMany()
                 .HasForeignKey(p=>p.SessionId)
                 .HasPrincipalKey(p=>p.SessionId);
 
@@ -90,8 +90,8 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbResult>()
                 .HasOne(p => p.Photo)
-                .WithOne(p => p.Result)
-                .HasForeignKey<DbPhoto>(p => p.PhotoId);
+                .WithOne()
+                .HasForeignKey<DbPhoto>(p => p.PhotoId); 
 
             modelBuilder
                 .Entity<DbResult>()
@@ -109,7 +109,7 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbSession>()
                 .HasOne(p=>p.User)
-                .WithMany(t=>t.Sessions)
+                .WithMany()
                 .HasForeignKey(p=>p.UserId)
                 .HasPrincipalKey(p=>p.UserId);
 
@@ -126,7 +126,6 @@ namespace Comptech.Backend.Data
                 .Property(p => p.Status).IsRequired();
 
             base.OnModelCreating(modelBuilder);
-
         }
         
     }
