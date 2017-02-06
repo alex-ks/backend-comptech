@@ -29,7 +29,15 @@ namespace Comptech.Backend.Service.Analytics
                         await client.PostAsync("rest/request_recognition",
                         new StringContent(JsonConvert.SerializeObject(new { modelName = modelName })));
                     
-                    response.EnsureSuccessStatusCode();
+                    if (response.StatusCode.Equals(HttpStatusCode.Conflict))
+                    {
+                        return null;
+                    }
+
+                    if (!response.StatusCode.Equals(HttpStatusCode.OK))
+                    {
+                        throw new HttpRequestException();
+                    }
 
                     var stringResponse = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<RecognitionRequest>(stringResponse).SessionUid;
@@ -45,7 +53,13 @@ namespace Comptech.Backend.Service.Analytics
                 
                 var response = 
                     await client.PostAsync("rest/start_recognition", 
-                    new StringContent(JsonConvert.SerializeObject(new { photo = photo, sessionUID = sessionUid })));
+                    new StringContent(JsonConvert.SerializeObject(
+                        new 
+                        { 
+                            photo = System.Convert.ToBase64String(photo), 
+                            sessionUID = sessionUid
+                        }
+                    )));
 
                 response.EnsureSuccessStatusCode();                
             }
@@ -59,11 +73,20 @@ namespace Comptech.Backend.Service.Analytics
                 client.BaseAddress = analyticsServerUri;
                 
                 var response = await client.GetAsync("rest/result");
-                response.EnsureSuccessStatusCode();
+                
+                if (response.StatusCode.Equals(HttpStatusCode.Conflict))
+                {
+                    return null;
+                }
+
+                if (!response.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    throw new HttpRequestException();
+                }
 
                 var stringResponse = await response.Content.ReadAsStringAsync();
                 var responseResults = JsonConvert.DeserializeObject<RecognitionResultsResponse>(stringResponse);
-
+                
                 var recognitionResults = new RecognitionResults(
                     responseResults.IsValid,
                     new Points (
