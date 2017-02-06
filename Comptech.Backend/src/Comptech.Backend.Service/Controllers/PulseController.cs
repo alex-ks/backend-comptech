@@ -38,6 +38,13 @@ namespace Comptech.Backend.Service.Controllers
             {
                 logger.LogInformation("Pulse accepted");
                 logger.LogInformation("User tries to save pulse");
+
+                if(request == null)
+                {
+                    logger.LogInformation("request is null");
+                    return BadRequest("request is null");
+                }
+
                 try
                 {
                     var session = sessionRepository.GetLastSessionForUser(request.SessionId);
