@@ -46,7 +46,12 @@ namespace Comptech.Backend.Service
         /// <returns>RecognitionTask - recognition task for analytics service</returns>
         public RecognitionTask Dequeue()
         {
-            return queue.Take();
+            using (logger.BeginScope(nameof(Dequeue)))
+            {
+                var task = queue.Take();
+                logger.LogInformation($"Task dequeued. Task information: model name {task.ModelName}, photoId {task.PhotoId}.");
+                return task;
+            }
         }
 
         /// <summary>
@@ -55,7 +60,11 @@ namespace Comptech.Backend.Service
         /// <param name="task">RecognitionTask - recognition task for analytics service</param>
         public void Enqueue(RecognitionTask task)
         {
-            queue.Add(task);
+            using (logger.BeginScope(nameof(Enqueue)))
+            {
+                queue.Add(task);
+                logger.LogInformation($"Task enqueued. Task information: model name {task.ModelName}, photoId {task.PhotoId}.");
+            }
         }
 
         /// <summary>
