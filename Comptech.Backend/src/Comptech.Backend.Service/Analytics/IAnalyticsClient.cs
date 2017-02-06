@@ -1,13 +1,14 @@
 using Comptech.Backend.Data.DomainEntities;
+using System.Threading.Tasks;
 
 namespace Comptech.Backend.Service.Analytics
 {
     public interface IAnalyticsClient
     {
-        bool RequestRecognitionSession(string modelName, out string sessionUID);
+        Task<string> RequestRecognitionSession(string modelName);
 
-        bool UploadPhoto(byte[] photo, string sessionUID);
+        void UploadPhoto(byte[] photo, string sessionUID);
 
-        bool TryGetResults(string sessionUID, out RecognitionResults recognitionResults);
+        Task<RecognitionResults> TryGetResults(string sessionUID, int photoId);
     }
 }
