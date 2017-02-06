@@ -32,9 +32,7 @@ namespace Comptech.Backend.Service.Analytics
                     response.EnsureSuccessStatusCode();
 
                     var stringResponse = await response.Content.ReadAsStringAsync();
-                    var sessionUid = JsonConvert.DeserializeObject<string>(stringResponse);
-
-                    return sessionUid;
+                    return JsonConvert.DeserializeObject<RecognitionRequest>(stringResponse).SessionUid;
             }
         }
 

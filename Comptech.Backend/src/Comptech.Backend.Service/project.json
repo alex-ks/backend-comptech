@@ -21,7 +21,6 @@
     "Microsoft.AspNetCore.Mvc": "1.0.1",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Comptech.Backend.Data": "1.0.0-*"
-    // "Microsoft.AspNet.WebApi.Client": "5.2.3"
   },
 
   "tools": {
