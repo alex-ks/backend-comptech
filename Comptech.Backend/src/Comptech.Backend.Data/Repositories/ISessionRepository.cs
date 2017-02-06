@@ -9,5 +9,7 @@ namespace Comptech.Backend.Data.Repositories
     public interface ISessionRepository : IRepository<Session>
     {
         Session GetLastSessionForUser(int userId);
+        Session GetSessionById(int sessionId);
+        IEnumerable<int> GetAllExpired();
     }
 }
