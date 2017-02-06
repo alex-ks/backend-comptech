@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 
 namespace Comptech.Backend.Service.Models
 {
-    public class RecogntionResultsResponse
+    public class RecognitionResultsResponse
     {
         [DataMember(Name = "pointLeftUp")]
         public Point TopLeft { get; set; }

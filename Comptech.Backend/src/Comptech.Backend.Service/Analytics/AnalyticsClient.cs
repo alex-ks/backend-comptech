@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Comptech.Backend.Service.Analytics
 {
@@ -24,10 +25,14 @@ namespace Comptech.Backend.Service.Analytics
             {
                     client.BaseAddress = analyticsServerUri;
 
-                    var response = await client.PostAsJsonAsync("rest/request_recognition", new { modelName = modelName });
+                    var response = 
+                        await client.PostAsync("rest/request_recognition",
+                        new StringContent(JsonConvert.SerializeObject(new { modelName = modelName })));
+                    
                     response.EnsureSuccessStatusCode();
 
-                    var sessionUid = await response.Content.ReadAsAsync<string>();
+                    var stringResponse = await response.Content.ReadAsStringAsync();
+                    var sessionUid = JsonConvert.DeserializeObject<string>(stringResponse);
 
                     return sessionUid;
             }
@@ -41,7 +46,8 @@ namespace Comptech.Backend.Service.Analytics
                 client.BaseAddress = analyticsServerUri;
                 
                 var response = 
-                    await client.PostAsJsonAsync("rest/start_recognition", new { photo = photo, sessionUID = sessionUid });
+                    await client.PostAsync("rest/start_recognition", 
+                    new StringContent(JsonConvert.SerializeObject(new { photo = photo, sessionUID = sessionUid })));
 
                 response.EnsureSuccessStatusCode();                
             }
@@ -57,22 +63,23 @@ namespace Comptech.Backend.Service.Analytics
                 var response = await client.GetAsync("rest/result");
                 response.EnsureSuccessStatusCode();
 
-                var responceResults = await response.Content.ReadAsAsync<RecogntionResultsResponse>();
-                var recognitionResults = new RecognitionResults();
-            
-                recognitionResults.Coords = new Points();
+                var stringResponse = await response.Content.ReadAsStringAsync();
+                var responseResults = JsonConvert.DeserializeObject<RecognitionResultsResponse>(stringResponse);
 
-                recognitionResults.Coords.BottomRight = new Comptech.Backend.Data.DomainEntities.Point();
-                recognitionResults.Coords.TopLeft = new Comptech.Backend.Data.DomainEntities.Point();
-
-                recognitionResults.Coords.BottomRight.X = responceResults.BottomRight.X;
-                recognitionResults.Coords.BottomRight.Y = responceResults.BottomRight.Y;
-                recognitionResults.Coords.TopLeft.X = responceResults.TopLeft.X;
-                recognitionResults.Coords.TopLeft.Y = responceResults.TopLeft.Y;
-
-                recognitionResults.IsValid = responceResults.IsValid;
-                recognitionResults.PhotoID = photoId;
-
+                var recognitionResults = new RecognitionResults(
+                    responseResults.IsValid,
+                    new Points (
+                        new Comptech.Backend.Data.DomainEntities.Point(
+                            responseResults.TopLeft.X,
+                            responseResults.TopLeft.Y
+                        ),
+                        new Comptech.Backend.Data.DomainEntities.Point(
+                            responseResults.BottomRight.X,
+                            responseResults.BottomRight.Y                            
+                        )
+                    ),
+                    photoId
+                );
                 return recognitionResults;
             }
         }
