@@ -32,13 +32,13 @@ namespace Comptech.Backend.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            optionBuilder.UseNpgsql(_connectionString);
+            optionBuilder.UseInMemoryDatabase("JajaBase");//Npgsql(_connectionString);
         }
          protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .Entity<DbUser>()
-                .ToTable("AspNetUsers");
+                .HasKey(u => u.UserId);//.ToTable("AspNetUsers");
 
             //DbPhoto entity
             modelBuilder

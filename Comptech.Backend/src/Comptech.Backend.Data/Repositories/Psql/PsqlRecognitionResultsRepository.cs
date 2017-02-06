@@ -16,7 +16,6 @@ namespace Comptech.Backend.Data.Repositories.Psql
             logger = loggerFactory.CreateLogger<PsqlRecognitionResultsRepository>();
         }
 
-
         public bool Add(RecognitionResult entity)
         {
             using (logger.BeginScope(nameof(this.Add)))
@@ -104,5 +103,5 @@ namespace Comptech.Backend.Data.Repositories.Psql
             }
         }
     }
-    }
 }
+
