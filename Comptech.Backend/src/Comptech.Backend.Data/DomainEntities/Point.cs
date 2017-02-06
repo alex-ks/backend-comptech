@@ -22,11 +22,8 @@ namespace Comptech.Backend.Data.DomainEntities
             {
                 return false;
             }
-            else
-            {
-                Point pointObj = obj as Point;
-                return X.Equals(pointObj.X) && Y.Equals(pointObj.Y);
-            }
+            Point pointObj = obj as Point;
+            return X.Equals(pointObj.X) && Y.Equals(pointObj.Y);
         }
 
         public override int GetHashCode()

@@ -24,12 +24,9 @@ namespace Comptech.Backend.Data.DomainEntities
             {
                 return false;
             }
-            else
-            {
-                RecognitionResults recognitionResultsObj = obj as RecognitionResults;
-                return IsValid.Equals(recognitionResultsObj.IsValid) && Coords.Equals(recognitionResultsObj.Coords)
-                    && PhotoID.Equals(PhotoID);
-            }
+            RecognitionResults recognitionResultsObj = obj as RecognitionResults;
+            return IsValid.Equals(recognitionResultsObj.IsValid) && Coords.Equals(recognitionResultsObj.Coords)
+                && PhotoID.Equals(PhotoID);
         }
 
         public override int GetHashCode()

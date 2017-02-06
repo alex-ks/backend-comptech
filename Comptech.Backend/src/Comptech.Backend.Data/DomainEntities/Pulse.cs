@@ -24,12 +24,9 @@ namespace Comptech.Backend.Data.DomainEntities
             {
                 return false;
             }
-            else
-            {
-                Pulse pulseObj = obj as Pulse;
-                return SessionID.Equals(pulseObj.SessionID) && BPM.Equals(pulseObj.BPM)
-                    && TimeStamp.Equals(pulseObj.TimeStamp);
-            }
+            Pulse pulseObj = obj as Pulse;
+            return SessionID.Equals(pulseObj.SessionID) && BPM.Equals(pulseObj.BPM)
+                && TimeStamp.Equals(pulseObj.TimeStamp);
         }
 
         public override int GetHashCode()

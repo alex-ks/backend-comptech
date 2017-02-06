@@ -23,11 +23,8 @@ namespace Comptech.Backend.Data.DomainEntities
             {
                 return false;
             }
-            else
-            {
-                Points pointsObj = obj as Points;
-                return TopLeft.Equals(pointsObj.TopLeft) && BottomRight.Equals(pointsObj.BottomRight) ;
-            }
+            Points pointsObj = obj as Points;
+            return TopLeft.Equals(pointsObj.TopLeft) && BottomRight.Equals(pointsObj.BottomRight);
         }
 
         public override int GetHashCode()
@@ -35,5 +32,5 @@ namespace Comptech.Backend.Data.DomainEntities
             return TopLeft.GetHashCode() ^ BottomRight.GetHashCode();
         }
     }
-    
+
 }

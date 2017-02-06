@@ -25,17 +25,14 @@ namespace Comptech.Backend.Data.DomainEntities
             {
                 return false;
             }
-            else
-            {
-                Photo photoObj = obj as Photo;
-                return PhotoID.Equals(PhotoID) && SessionID.Equals(SessionID) && Image.Equals(Image) 
-                    && TimeStamp.Equals(TimeStamp);
-            }
+            Photo photoObj = obj as Photo;
+            return PhotoID.Equals(PhotoID) && SessionID.Equals(SessionID) && Image.Equals(Image) 
+                && TimeStamp.Equals(TimeStamp);
         }
 
         public override int GetHashCode()
         {
-            return PhotoID ^ SessionID  ^ TimeStamp.GetHashCode();
+            return PhotoID ^ SessionID ^ TimeStamp.GetHashCode();
         }
     }
 }

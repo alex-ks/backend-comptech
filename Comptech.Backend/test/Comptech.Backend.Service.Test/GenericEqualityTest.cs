@@ -43,8 +43,6 @@ namespace Comptech.Backend.Service.Test
         [Fact]
         public void TestGetHashCode()
         {
-            int ahash = a.GetHashCode();
-            int bhash = b.GetHashCode();
             Assert.Equal(a.Equals(b) && (a.GetHashCode() == b.GetHashCode()), true);
         }
 

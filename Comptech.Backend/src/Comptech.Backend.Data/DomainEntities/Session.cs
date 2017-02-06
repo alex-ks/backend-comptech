@@ -27,12 +27,9 @@ namespace Comptech.Backend.Data.DomainEntities
             {
                 return false;
             }
-            else
-            {
-                Session recognitionResultsObj = obj as Session;
-                return UserID.Equals(recognitionResultsObj.UserID) && Start.Equals(recognitionResultsObj.Start)
-                    && ExpiresAt.Equals(ExpiresAt) && Status.Equals(Status);
-            }
+            Session recognitionResultsObj = obj as Session;
+            return UserID.Equals(recognitionResultsObj.UserID) && Start.Equals(recognitionResultsObj.Start)
+                && ExpiresAt.Equals(ExpiresAt) && Status.Equals(Status);
         }
 
         public override int GetHashCode()
