@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Comptech.Backend.Data": "1.0.0-*",
+    "NETStandard.Library": "1.6.1",
+    "xunit": "2.2.0-beta5-build3474"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

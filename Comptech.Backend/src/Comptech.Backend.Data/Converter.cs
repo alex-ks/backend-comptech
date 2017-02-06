@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Comptech.Backend.Data.DbEntities;
 using Comptech.Backend.Data.DomainEntities;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Comptech.Backend.Data.Test")]
 
 namespace Comptech.Backend.Data
 {
