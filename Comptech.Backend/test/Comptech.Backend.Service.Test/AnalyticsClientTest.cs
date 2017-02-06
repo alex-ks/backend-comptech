@@ -31,6 +31,5 @@ namespace Comptech.Backend.Service.Test
                 recRes = await client.TryGetResults(sessionId, photoId);
             } 
         }
-        }
     }
 }
