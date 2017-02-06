@@ -55,7 +55,7 @@ namespace Comptech.Backend.Service.Controllers
                 //validate request
                 if (photoRequest == null)
                 {
-                    _logger.LogError($"Attempt to start a session because of null mobile photo request.");
+                    _logger.LogError("Attempt to start a session because of null mobile photo request.");
                     return BadRequest(new { message = "Error: something in your request is empty" });
                 }
 

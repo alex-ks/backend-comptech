@@ -63,13 +63,13 @@ namespace Comptech.Backend.Service.Controllers
 
                     var pulse = new Pulse(session.SessionID, request.Pulse, request.TimeStamp);
                     _pulseRepository.Add(pulse);
-                    _logger.LogInformation($"Pulse of user with sessionId {request.SessionId} stored in database");
+                    _logger.LogInformation("Pulse of user with sessionId {0} stored in database", request.SessionId);
                     return Ok();
 
                 }
                 catch (Exception exception)
                 {
-                    _logger.LogError($"Exception caught: {exception.Message}, {exception.StackTrace}");
+                    _logger.LogError("Exception caught: {0}, {1}", exception.Message, exception.StackTrace);
                     return BadRequest(exception.Message);
                 }
             }
@@ -96,12 +96,12 @@ namespace Comptech.Backend.Service.Controllers
                     }
 
                     var lastPulse = _pulseRepository.GetLastPulseInSession(session.SessionID);
-                    _logger.LogInformation($"User {userId} sent pulse");
+                    _logger.LogInformation("User {0} sent pulse", userId);
                     return Ok(new { pulse = lastPulse.BPM, state = "yes" });
                 }
                 catch (Exception exception)
                 {
-                    _logger.LogError($"Exception caught: {exception.Message}, {exception.StackTrace}");
+                    _logger.LogError("Exception caught: {0}, {1}", exception.Message, exception.StackTrace);
                     return BadRequest(exception.Message);
                 }
             }

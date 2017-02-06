@@ -51,7 +51,7 @@ namespace Comptech.Backend.Service
             var expiresAt = createdAt + _sessionTimeout;
             var session = new Session(userId, createdAt, expiresAt, SessionStatus.ACTIVE);
             _sessionRepository.Add(session);
-            _logger.LogInformation($"Start sessionId:{session.SessionID} for userId:{userId}");
+            _logger.LogInformation("Start sessionId:{0} for userId:{1}", session.SessionID,userId);
             return session;
         }
 
@@ -70,7 +70,7 @@ namespace Comptech.Backend.Service
             var session = _sessionRepository.GetSessionById(sessionId);
             session.Status = SessionStatus.FINISHED;
             _sessionRepository.Update(session);
-            _logger.LogInformation($"Session {sessionId} is finished");
+            _logger.LogInformation("Session {0} is finished", sessionId);
         }
 
         public void Dispose()

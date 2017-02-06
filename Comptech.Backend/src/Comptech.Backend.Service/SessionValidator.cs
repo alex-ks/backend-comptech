@@ -21,7 +21,7 @@ namespace Comptech.Backend.Service
         {
             if (session == null)
             {
-                logger.LogInformation($"invalid arguments {nameof(session)}");
+                logger.LogInformation("invalid arguments {0}", nameof(session));
                 errorMessage = "invalid arguments";
                 return true;
             }
@@ -33,7 +33,7 @@ namespace Comptech.Backend.Service
         {
             if (session.Status == SessionStatus.ACTIVE)
             {
-                logger.LogInformation($"Session of user with sessionId {session.SessionID} has already been started");
+                logger.LogInformation("Session of user with sessionId {0} has already been started", session.SessionID);
                 errorMessage = "Session with user has already been started";
                 return true;
             }
@@ -44,7 +44,7 @@ namespace Comptech.Backend.Service
         {
             if (session.Status == SessionStatus.FINISHED)
             {
-                logger.LogInformation($"Session of user with sessionId {session.SessionID} is finished");
+                logger.LogInformation("Session of user with sessionId {0} is finished", session.SessionID);
                 errorMessage = "Session of user is finished";
                 return true;
             }

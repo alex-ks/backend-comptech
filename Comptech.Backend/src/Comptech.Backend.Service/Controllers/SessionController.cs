@@ -43,7 +43,7 @@ namespace Comptech.Backend.Service.Controllers
                 {
                     if (request.SessionId == null)
                     {
-                        _logger.LogError($"Attempted to finish session with null sessionId");
+                        _logger.LogError("Attempted to finish session with null sessionId");
                         return BadRequest(new
                         {
                             message = "Error: Session ID is empty"
@@ -57,7 +57,7 @@ namespace Comptech.Backend.Service.Controllers
                     
                     if (session.SessionID != request.SessionId)
                     {
-                        _logger.LogCritical($"User {userId}: Obtained session ID is incorrect or malformed.");
+                        _logger.LogCritical("User {0}: Obtained session ID is incorrect or malformed.", userId);
                         return BadRequest(new
                         {
                             message = "Error: Authentification failure. Your session ID is incorrect of malformed."
@@ -67,7 +67,7 @@ namespace Comptech.Backend.Service.Controllers
                     string errorMessage;
                     if (_sessionValidator.IsFinishedSession(session, out errorMessage))
                     {
-                        _logger.LogWarning($"{errorMessage} for user {userId}");
+                        _logger.LogWarning("{0} for user {1}", errorMessage, userId);
                         return StatusCode(409, errorMessage);
                     }
 
