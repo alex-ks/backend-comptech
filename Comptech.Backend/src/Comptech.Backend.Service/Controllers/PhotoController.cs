@@ -31,7 +31,7 @@ namespace Comptech.Backend.Service.Controllers
             this.logger = loggerFactory.CreateLogger<PhotoController>();
         }
 
-        [Route("rest/faces")]
+        [Route("rest/photo")]
         [HttpGet]
         public async Task<IActionResult> GetPhoto()
         {
@@ -42,17 +42,28 @@ namespace Comptech.Backend.Service.Controllers
                     var user = await userManager.GetUserAsync(HttpContext.User);
                     int userId = int.Parse(await userManager.GetUserIdAsync(user));
                     Session session = sessionRepository.GetLastSessionForUser(userId);
+                    if (session == null)
+                    {
+                        return BadRequest("Session is not started yet.");
+                    }
+
                     Photo photo = photoRepository.GetLastPhotoInSession(session.SessionID);
                     RecognitionResults recognitionResults =
                         recognitionResultsRepository.GetRecognitionResultsByPhotoId(photo.PhotoID);
 
+                    if (recognitionResults == null)
+                    {
+                        return Ok(new { photo = Convert.ToBase64String(photo.Image), 
+                            recognitionResult = (string)null });
+                    }
+
                     return Ok(new
                     {
-                        foto = Convert.ToBase64String(photo.Image),
+                        photo = Convert.ToBase64String(photo.Image),
                         recognitionResult = new
                         {
                             valid = recognitionResults.IsValid,
-                            cordinates = new
+                            coordinates = new
                             {
                                 topLeft = new
                                 {
