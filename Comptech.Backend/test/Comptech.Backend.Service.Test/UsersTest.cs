@@ -1,20 +1,11 @@
 ﻿using Comptech.Backend.Service.Controllers;
 using Comptech.Backend.Service.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 
