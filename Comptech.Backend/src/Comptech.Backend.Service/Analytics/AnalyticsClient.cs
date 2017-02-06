@@ -53,7 +53,13 @@ namespace Comptech.Backend.Service.Analytics
                 
                 var response = 
                     await client.PostAsync("rest/start_recognition", 
-                    new StringContent(JsonConvert.SerializeObject(new { photo = photo, sessionUID = sessionUid })));
+                    new StringContent(JsonConvert.SerializeObject(
+                        new 
+                        { 
+                            photo = System.Convert.ToBase64String(photo), 
+                            sessionUID = sessionUid
+                        }
+                    )));
 
                 response.EnsureSuccessStatusCode();                
             }
