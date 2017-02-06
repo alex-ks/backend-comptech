@@ -39,9 +39,9 @@ namespace Comptech.Backend.Service
             FileStream fsEncrypted, fsDecrypted;
             byte[] decBytePhoto;
 
-            var guId = Guid.NewGuid(); 
-            var tmpEncName = string.Format(@"tmp{0}.enc", guId);
-            var tmpDecName = string.Format(@"tmp{0}.dec", guId);
+            var guid = Guid.NewGuid(); 
+            var tmpEncName = string.Format($"tmp{guid}.enc");
+            var tmpDecName = string.Format($"tmp{guid}.dec");
 
             using (fsEncrypted = new FileStream(tmpEncName, FileMode.OpenOrCreate, FileAccess.Write))
             {
