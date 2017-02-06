@@ -9,9 +9,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Comptech.Backend.Service
 {
+    /// <summary>
+    /// Decryptor class to decrypt encrypted photo, passed as byte array
+    /// </summary>
+    /// <example>
+    /// Decryptor decrypt = ... //Instantiate Decryptor manually or using Di
+    /// byte[] decryptedPhoto = decrypt.Decrypt(encryptedPhoto)
+    /// </example>
     public class Decryptor : IDecryptor
     {
-        //I hope that string will marshall string to const char *
+        //I hope that string will be marshalled to const char *
         [DllImport("libEncrypt.so")]
         private static extern void decrypt(string name_file_in, string name_file_out);
 
