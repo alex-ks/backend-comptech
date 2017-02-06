@@ -52,6 +52,8 @@ namespace Comptech.Backend.Service
             services.AddMvc();
 
             services.AddSingleton(typeof(IConfiguration), Configuration);
+            //добавляем TaskRecognitionQueue в DI как сиглтон
+            services.AddSingleton<RecognitionTaskQueue>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,9 +12,8 @@ namespace Comptech.Backend.Data.DomainEntities
         public DateTime Start { get; set; }
         public SessionStatus Status { get; set; }
 
-        public Session(int sessionID, int userID, DateTime start, SessionStatus status)
+        public Session(int userID, DateTime start, SessionStatus status)
         {
-            SessionID = sessionID;
             UserID = userID;
             Start = start;
             Status = status;
