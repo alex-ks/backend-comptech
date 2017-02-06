@@ -38,16 +38,21 @@ namespace Comptech.Backend.Service
         {
             FileStream fsEncrypted, fsDecrypted;
             byte[] decBytePhoto;
-            using (fsEncrypted = new FileStream("tmp.enc", FileMode.OpenOrCreate, FileAccess.Write))
+
+            var guId = Guid.NewGuid(); 
+            var tmpEncName = string.Format(@"tmp{0}.enc", guId);
+            var tmpDecName = string.Format(@"tmp{0}.dec", guId);
+
+            using (fsEncrypted = new FileStream(tmpEncName, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 fsEncrypted.Write(encryptedPhoto, 0, encryptedPhoto.Length);
                 fsEncrypted.Flush();
             }
-            FileInfo decFileInfo = new FileInfo("tmp.dec");
+            var decFileInfo = new FileInfo(tmpDecName);
             fsDecrypted = decFileInfo.Create();
             logger.LogInformation("Decrypting...");
-            decrypt("tmp.enc", "tmp.dec");
-            using (fsDecrypted = new FileStream("tmp.dec", FileMode.Create, FileAccess.Read))
+            decrypt(tmpEncName, tmpDecName);
+            using (fsDecrypted = new FileStream(tmpDecName, FileMode.Create, FileAccess.Read))
             {
                 decBytePhoto = new byte[decFileInfo.Length];
                 fsDecrypted.Read(decBytePhoto, 0, decBytePhoto.Length);
@@ -56,12 +61,12 @@ namespace Comptech.Backend.Service
             logger.LogInformation("Cleaning up after decryption...");
             try
             {
-                File.Delete("tmp.enc");
-                File.Delete("tmp.dec");
+                File.Delete(tmpEncName);
+                File.Delete(tmpDecName);
             }
             catch(IOException e)
             {
-                logger.LogCritical($"Deleting files tmp.enc and tmp.dec failed: {e.Message}. Stack trace:\n{e.StackTrace}");
+                logger.LogCritical("Deleting files tmp.enc and tmp.dec failed: {0}. Stack trace:\n{1}", e.Message, e.StackTrace);
             }
             return decBytePhoto;
         }
