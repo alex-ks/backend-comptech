@@ -1,7 +1,6 @@
-﻿
-namespace Comptech.Backend.Service
+﻿namespace Comptech.Backend.Service
 {
-    interface IImageDecryptor
+    public interface IImageDecryptor
     {
         byte[] Decrypt(byte[] encryptedPhoto);
     }
