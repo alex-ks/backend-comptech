@@ -37,7 +37,7 @@ namespace Comptech.Backend.Service.Analytics
         }
 
         //throws an exception if the status code falls outside the range 200–299
-        public async void UploadPhoto(byte[] photo, string sessionUid)
+        public async Task UploadPhoto(byte[] photo, string sessionUid)
         {
             using (var client = new HttpClient())
             {

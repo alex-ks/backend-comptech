@@ -7,7 +7,7 @@ namespace Comptech.Backend.Service.Analytics
     {
         Task<string> RequestRecognitionSession(string modelName);
 
-        void UploadPhoto(byte[] photo, string sessionUID);
+        Task UploadPhoto(byte[] photo, string sessionUID);
 
         Task<RecognitionResults> TryGetResults(string sessionUID, int photoId);
     }
