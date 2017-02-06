@@ -60,6 +60,15 @@ namespace Comptech.Backend.Service {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to .
+        /// </summary>
+        public static string DecryptKey {
+            get {
+                return ResourceManager.GetString("DecryptKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to 400.
         /// </summary>
         public static string ErrorMessage {
