@@ -17,6 +17,22 @@ namespace Comptech.Backend.Data.DomainEntities
             Coords = coords;
             PhotoID = photoID;
         }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+            RecognitionResults recognitionResultsObj = obj as RecognitionResults;
+            return IsValid.Equals(recognitionResultsObj.IsValid) && Coords.Equals(recognitionResultsObj.Coords)
+                && PhotoID.Equals(PhotoID);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsValid.GetHashCode() ^ Coords.GetHashCode() ^ PhotoID;
+        }
     }
 
 }
