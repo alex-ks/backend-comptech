@@ -46,9 +46,7 @@ namespace Comptech.Backend.Service
         /// <returns>RecognitionTask - recognition task for analytics service</returns>
         public RecognitionTask Dequeue()
         {
-            RecognitionTask task;
-            queue.TryTake(out task);
-            return task;
+            return queue.Take();
         }
 
         /// <summary>
@@ -57,7 +55,17 @@ namespace Comptech.Backend.Service
         /// <param name="task">RecognitionTask - recognition task for analytics service</param>
         public void Enqueue(RecognitionTask task)
         {
-            queue.TryAdd(task);
+            queue.Add(task);
+        }
+
+        /// <summary>
+        /// Returns recognition tasks count in queue.
+        /// It is basically created for unit testing
+        /// </summary>
+        /// <returns>int - count of recognition tasks in queue</returns>
+        public int GetQueueCount()
+        {
+            return queue.Count;
         }
     }
 }
