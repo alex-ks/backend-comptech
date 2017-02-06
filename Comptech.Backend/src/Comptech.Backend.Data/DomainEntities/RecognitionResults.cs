@@ -11,6 +11,12 @@ namespace Comptech.Backend.Data.DomainEntities
         public Points Coords { get; set; }
         public int PhotoID { get; set; }
 
+        public RecognitionResults(bool isValid, Points coords, int photoID)
+        {
+            IsValid = isValid;
+            Coords = coords;
+            PhotoID = photoID;
+        }
     }
 
 }
