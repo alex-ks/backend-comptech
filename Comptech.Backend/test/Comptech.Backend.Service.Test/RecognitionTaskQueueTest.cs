@@ -17,11 +17,12 @@ namespace Comptech.Backend.Service.Test
         [Fact]
         public void TestEnqueue()
         {
+            queue.ClearQueue();
             var task = new RecognitionTask();
             task.ModelName = modelName;
             task.PhotoId = photoId;
             queue.Enqueue(task);
-            Assert.NotNull(queue.GetQueueCount());
+            Assert.True(queue.GetQueueCount() == 1);
         }
 
         /// <summary>
@@ -30,13 +31,15 @@ namespace Comptech.Backend.Service.Test
         [Fact]
         public void TestDequeue()
         {
+            queue.ClearQueue();
             var task = new RecognitionTask();
             task.ModelName = modelName;
             task.PhotoId = photoId;
             queue.Enqueue(task);
             var taskRes = queue.Dequeue();
             Assert.Equal(task, taskRes);
-            //not sure, if these two tests are required
+            //not sure, if these tests are required
+            Assert.True(queue.GetQueueCount() == 0);
             Assert.True(task.ModelName == taskRes.ModelName);
             Assert.True(task.PhotoId == taskRes.PhotoId);
         }

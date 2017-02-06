@@ -67,5 +67,15 @@ namespace Comptech.Backend.Service
         {
             return queue.Count;
         }
+
+        /// <summary>
+        /// Clears recognition tasks queue. For testing purpose only
+        /// </summary>
+        public void ClearQueue()
+        {
+            //remove every item in queue
+            for(int i = 0; i < queue.Count; ++i)
+                queue.Take();
+        }
     }
 }
