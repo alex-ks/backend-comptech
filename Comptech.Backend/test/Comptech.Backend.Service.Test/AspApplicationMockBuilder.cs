@@ -36,7 +36,6 @@ namespace Comptech.Backend.Service.Test
 
         public AspApplicationMock Build()
         {
-            var serviceProvider = Services.BuildServiceProvider();
             var app = new AspApplicationMock();
 
             app.HttpContext = new DefaultHttpContext();
@@ -46,6 +45,8 @@ namespace Comptech.Backend.Service.Test
             {
                 HttpContext = app.HttpContext
             });
+
+            var serviceProvider = Services.BuildServiceProvider();
 
             app.UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             app.RoleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
