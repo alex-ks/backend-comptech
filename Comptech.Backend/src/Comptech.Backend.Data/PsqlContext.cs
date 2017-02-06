@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Comptech.Backend.Data.DbEntities;
 
 
@@ -36,14 +38,31 @@ namespace Comptech.Backend.Data
         }
          protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            InitializeDbUser(modelBuilder);
+            InitializeDbPhoto(modelBuilder);
+            InitializeDbPulse(modelBuilder);
+            InitializeDbResult(modelBuilder);
+            InitializeDbSession(modelBuilder);
+            base.OnModelCreating(modelBuilder);
+        }
+        
+        private void InitializeDbUser(ModelBuilder modelBuilder)
+        {
             modelBuilder
                 .Entity<DbUser>()
                 .ToTable("AspNetUsers");
+        }
 
-            //DbPhoto entity
+        private void InitializeDbPhoto(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+               .Entity<DbPhoto>()
+               .HasKey(p => p.PhotoId);
+
             modelBuilder
                 .Entity<DbPhoto>()
-                .HasKey(p=>p.PhotoId);
+                .Property<int>("PhotoId")
+                .ValueGeneratedOnAdd();
 
             modelBuilder
                 .Entity<DbPhoto>()
@@ -63,26 +82,28 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbPhoto>()
                 .Property(p => p.Timestamp).IsRequired();
+        }
 
-
-            //DbPulse entity
+        private void InitializeDbPulse(ModelBuilder modelBuilder)
+        {
             modelBuilder
                 .Entity<DbPulse>()
-                .HasKey(p=>new {p.SessionId,p.timestamp });
+                .HasKey(p => new { p.SessionId, p.timestamp });
 
             modelBuilder
                 .Entity<DbPulse>()
-                .HasOne(p=>p.Session)
+                .HasOne(p => p.Session)
                 .WithMany()
-                .HasForeignKey(p=>p.SessionId)
-                .HasPrincipalKey(p=>p.SessionId);
+                .HasForeignKey(p => p.SessionId)
+                .HasPrincipalKey(p => p.SessionId);
 
             modelBuilder
                 .Entity<DbPulse>()
                 .Property(p => p.Bpm).IsRequired();
+        }
 
-
-            //DbResult entity
+        private void InitializeDbResult(ModelBuilder modelBuilder)
+        {
             modelBuilder
                 .Entity<DbResult>()
                 .HasKey(p => p.PhotoId);
@@ -91,7 +112,7 @@ namespace Comptech.Backend.Data
                 .Entity<DbResult>()
                 .HasOne(p => p.Photo)
                 .WithOne()
-                .HasForeignKey<DbPhoto>(p => p.PhotoId); 
+                .HasForeignKey<DbPhoto>(p => p.PhotoId);
 
             modelBuilder
                 .Entity<DbResult>()
@@ -100,18 +121,25 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbResult>()
                 .Property(p => p.PhotoId).IsRequired();
+        }
 
-            //DbSession entity
+        private void InitializeDbSession(ModelBuilder modelBuilder)
+        {
             modelBuilder
                 .Entity<DbSession>()
                 .HasKey(p => p.SessionId);
 
             modelBuilder
                 .Entity<DbSession>()
-                .HasOne(p=>p.User)
+                .Property<int>("SessionId")
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<DbSession>()
+                .HasOne(p => p.User)
                 .WithMany()
-                .HasForeignKey(p=>p.UserId)
-                .HasPrincipalKey(p=>p.UserId);
+                .HasForeignKey(p => p.UserId)
+                .HasPrincipalKey(p => p.UserId);
 
             modelBuilder
                 .Entity<DbSession>()
@@ -124,9 +152,6 @@ namespace Comptech.Backend.Data
             modelBuilder
                 .Entity<DbSession>()
                 .Property(p => p.Status).IsRequired();
-
-            base.OnModelCreating(modelBuilder);
         }
-        
     }
 }

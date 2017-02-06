@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Comptech.Backend.Data.Tests")]
+[assembly: AssemblyProduct("Comptech.Backend.Data.Test")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("7a5bd2f2-4615-407b-b5b1-54bc33df1c2e")]
+[assembly: Guid("8fd54f79-0b60-4ad3-9cf8-cd905421bef1")]
