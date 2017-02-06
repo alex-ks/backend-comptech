@@ -10,23 +10,23 @@ using Microsoft.Extensions.Logging;
 namespace Comptech.Backend.Service
 {
     /// <summary>
-    /// Decryptor class to decrypt encrypted photo, passed as byte array
+    /// ImageDecryptor class to decrypt encrypted photo, passed as byte array
     /// </summary>
     /// <example>
-    /// Decryptor decrypt = ... //Instantiate Decryptor manually or using Di
+    /// ImageDecryptor decrypt = ... //Instantiate ImageDecryptor manually or using Di
     /// byte[] decryptedPhoto = decrypt.Decrypt(encryptedPhoto)
     /// </example>
-    public class Decryptor : IDecryptor
+    public class ImageDecryptor : IImageDecryptor
     {
         //I hope that string will be marshalled to const char *
         [DllImport("libEncrypt.so")]
         private static extern void decrypt(string name_file_in, string name_file_out);
 
-        private readonly ILogger<Decryptor> logger;
+        private readonly ILogger<ImageDecryptor> logger;
 
-        public Decryptor(ILoggerFactory loggerFactory)
+        public ImageDecryptor(ILoggerFactory loggerFactory)
         {
-            logger = loggerFactory.CreateLogger<Decryptor>();
+            logger = loggerFactory.CreateLogger<ImageDecryptor>();
         }
 
         /// <summary>
