@@ -23,9 +23,10 @@ namespace Comptech.Backend.Service.Controllers
         private readonly IPulseRepository pulseRepository;
         private readonly IConfiguration configuration;
 
-        public PulseController(UserManager<ApplicationUser> userManager, ILoggerFactory loggerFactory)
+        public PulseController(UserManager<ApplicationUser> userManager, ILoggerFactory loggerFactory,IConfiguration configuration)
         {
             this.userManager = userManager;
+            this.configuration = configuration;
             logger = loggerFactory.CreateLogger<PulseController>();
         }
 
