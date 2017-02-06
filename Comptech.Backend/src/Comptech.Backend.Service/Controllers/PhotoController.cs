@@ -48,7 +48,7 @@ namespace Comptech.Backend.Service.Controllers
                     var photo = photoRepository.GetLastPhotoInSession(session.SessionID);
                     var recognitionResults = recognitionResultsRepository.GetRecognitionResultsByPhotoId(photo.PhotoID);
                     
-                    var recRes = (null == recognitionResults) 
+                    var recognitionResultsResponse = (null == recognitionResults) 
                     ?
                     null
                     :
@@ -73,7 +73,7 @@ namespace Comptech.Backend.Service.Controllers
                     return Ok(new 
                         {
                             photo = System.Convert.ToBase64String(photo.Image),
-                            recognitionResults = recRes
+                            recognitionResults = recognitionResultsResponse
                         }
                     );
                 }
