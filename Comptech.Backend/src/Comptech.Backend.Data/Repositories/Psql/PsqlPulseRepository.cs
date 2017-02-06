@@ -24,7 +24,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                 if (entity == null)
                 {
                     logger.LogWarning("ArgumentNullException while adding pulse in DB");
-                    throw new ArgumentNullException("Entity cannot be null");
+                    return false;
                 }
                 using (var context = new PsqlContext())
                 {
@@ -52,7 +52,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                 if (entity == null)
                 {
                     logger.LogWarning("ArgumentNullException while updating pulse in DB");
-                    throw new ArgumentNullException("Entity cannot be null");
+                    return false;
                 }
                 using (var context = new PsqlContext())
                 {
