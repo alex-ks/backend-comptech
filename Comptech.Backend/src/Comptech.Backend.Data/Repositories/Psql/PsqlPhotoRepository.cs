@@ -6,17 +6,19 @@ using Comptech.Backend.Data.DomainEntities;
 using Comptech.Backend.Data.DbEntities;
 using Microsoft.Extensions.Logging;
 
+
 namespace Comptech.Backend.Data.Repositories.Psql
 { 
     public class PsqlPhotoRepository : IPhotoRepository
     {
         private ILogger logger;
+        private IContextFactory context;
 
-        public PsqlPhotoRepository(ILoggerFactory loggerFactory)
+        public PsqlPhotoRepository(ILoggerFactory loggerFactory, IContextFactory contextFactory)
         {
             logger = loggerFactory.CreateLogger<PsqlPhotoRepository>();
+            context = contextFactory;
         }
-
 
         public bool Add(Photo entity)
         {
