@@ -51,6 +51,7 @@ namespace Comptech.Backend.Service
 
             services.AddMvc();
 
+            //добавляем TaskRecognitionQueue в DI как сиглтон
             services.AddSingleton<RecognitionTaskQueue>();
         }
 
