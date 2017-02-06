@@ -10,6 +10,12 @@ namespace Comptech.Backend.Data.DomainEntities
     {
         public Point TopLeft { get; set; }
         public Point BottomRight { get; set; }
+
+        public Points(Point topLeft, Point bottomRight)
+        {
+            TopLeft = topLeft;
+            BottomRight = bottomRight;
+        }
     }
     
 }
