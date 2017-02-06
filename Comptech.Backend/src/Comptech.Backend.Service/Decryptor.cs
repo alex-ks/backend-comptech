@@ -47,7 +47,7 @@ namespace Comptech.Backend.Service
             fsDecrypted = decFileInfo.Create();
             logger.LogInformation("Decrypting...");
             decrypt("tmp.enc", "tmp.dec");
-            using (fsDecrypted = new FileStream("tmp.dec", FileMode.Create))
+            using (fsDecrypted = new FileStream("tmp.dec", FileMode.Create, FileAccess.Read))
             {
                 decBytePhoto = new byte[decFileInfo.Length];
                 fsDecrypted.Read(decBytePhoto, 0, decBytePhoto.Length);
