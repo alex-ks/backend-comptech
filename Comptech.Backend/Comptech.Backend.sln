@@ -16,7 +16,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Comptech.Backend.Data", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{C5EC4242-BABB-4172-9A71-07EA60A47767}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Comptech.Backend.Data.Tests", "Comptech.Backend.Data.Tests\Comptech.Backend.Data.Tests.xproj", "{7A5BD2F2-4615-407B-B5B1-54BC33DF1C2E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Comptech.Backend.Data.Test", "Comptech.Backend.Data.Tests\Comptech.Backend.Data.Test.xproj", "{7A5BD2F2-4615-407B-B5B1-54BC33DF1C2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
