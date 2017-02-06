@@ -38,7 +38,6 @@ namespace Comptech.Backend.Service.Controllers
             {
                 using (logger.BeginScope(nameof(FinishSession)))
                 {
-                    //если в запросе нет id сессии, то возвращаем ошибку(?)
                     if (request.SessionId == null)
                     {
                         logger.LogError($"Attempted to finish session with null sessionId");
@@ -52,7 +51,7 @@ namespace Comptech.Backend.Service.Controllers
                     var userId = await userManager.GetUserIdAsync(user);
 
                     var session = sessionRepository.GetLastSessionForUser(int.Parse(userId));
-                    //проверяем несовпадение переданного id сессии и id сессии в базе
+                    
                     if (session.SessionID != request.SessionId)
                     {
                         logger.LogCritical($"User {userId}: Obtained session ID is incorrect or malformed.");
@@ -62,16 +61,16 @@ namespace Comptech.Backend.Service.Controllers
                         });
                     }
 
-                    //если сессия уже почему-то завершена, то возвращаем 409 Conflict
+                    
                     if (session.Status == SessionStatus.FINISHED)
                     {
                         logger.LogWarning($"User {userId}: Session is already finished.");
                         return StatusCode(409, new
                         {
                             message = "Error: Session is already finished."
-                        }); //Conflict
+                        }); 
                     }
-                    //обновляем статус
+                    
                     session.Status = SessionStatus.FINISHED;
                     repository.Update(session);
 
