@@ -12,12 +12,27 @@ namespace Comptech.Backend.Data.DomainEntities
         public byte[] Image { get; set; }
         public DateTime TimeStamp { get; set; }
 
-        public Photo(int photoID, int sessionID, byte[] image, DateTime timeStamp)
+        public Photo(int sessionID, byte[] image, DateTime timeStamp)
         {
-            PhotoID = photoID;
             SessionID = sessionID;
             Image = image;
             TimeStamp = timeStamp;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+            Photo photoObj = obj as Photo;
+            return PhotoID.Equals(PhotoID) && SessionID.Equals(SessionID) && Image.Equals(Image) 
+                && TimeStamp.Equals(TimeStamp);
+        }
+
+        public override int GetHashCode()
+        {
+            return PhotoID ^ SessionID ^ TimeStamp.GetHashCode();
         }
     }
 }

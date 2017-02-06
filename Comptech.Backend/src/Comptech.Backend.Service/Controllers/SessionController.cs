@@ -14,20 +14,23 @@ namespace Comptech.Backend.Service.Controllers
     [Authorize]
     public class SessionController : Controller
     {
-        private readonly ILogger logger;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly ISessionRepository sessionRepository;
-        private readonly IRepository<Session> repository;
+        private readonly ILogger _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISessionRepository _sessionRepository;
+        private readonly SessionValidator _sessionValidator;
+        private readonly SessionTracker _sessionTracker;
 
         public SessionController(UserManager<ApplicationUser> userManager,
                                ILoggerFactory loggerFactory,
                                ISessionRepository sessionRepository,
-                               IRepository<Session> repository)
+                               SessionValidator sessionValidator,
+                               SessionTracker sessionTracker)
         {
-            this.userManager = userManager;
-            this.sessionRepository = sessionRepository;
-            this.repository = repository;
-            logger = loggerFactory.CreateLogger<SessionController>();
+            _userManager = userManager;
+            _sessionRepository = sessionRepository;
+            _sessionValidator = sessionValidator;
+            _sessionTracker = sessionTracker;
+            _logger = loggerFactory.CreateLogger<SessionController>();
         }
 
         [Route("/rest/finished")]
@@ -36,52 +39,46 @@ namespace Comptech.Backend.Service.Controllers
         {
             try
             {
-                using (logger.BeginScope(nameof(FinishSession)))
+                using (_logger.BeginScope(nameof(FinishSession)))
                 {
-                    //если в запросе нет id сессии, то возвращаем ошибку(?)
                     if (request.SessionId == null)
                     {
-                        logger.LogError($"Attempted to finish session with null sessionId");
+                        _logger.LogError("Attempted to finish session with null sessionId");
                         return BadRequest(new
                         {
                             message = "Error: Session ID is empty"
                         });
                     }
 
-                    var user = await userManager.GetUserAsync(HttpContext.User);
-                    var userId = await userManager.GetUserIdAsync(user);
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+                    var userId = await _userManager.GetUserIdAsync(user);
 
-                    var session = sessionRepository.GetLastSessionForUser(int.Parse(userId));
-                    //проверяем несовпадение переданного id сессии и id сессии в базе
+                    var session = _sessionRepository.GetLastSessionForUser(int.Parse(userId));
+                    
                     if (session.SessionID != request.SessionId)
                     {
-                        logger.LogCritical($"User {userId}: Obtained session ID is incorrect or malformed.");
+                        _logger.LogCritical("User {0}: Obtained session ID is incorrect or malformed.", userId);
                         return BadRequest(new
                         {
                             message = "Error: Authentification failure. Your session ID is incorrect of malformed."
                         });
                     }
 
-                    //если сессия уже почему-то завершена, то возвращаем 409 Conflict
-                    if (session.Status == SessionStatus.FINISHED)
+                    string errorMessage;
+                    if (_sessionValidator.IsFinishedSession(session, out errorMessage))
                     {
-                        logger.LogWarning($"User {userId}: Session is already finished.");
-                        return StatusCode(409, new
-                        {
-                            message = "Error: Session is already finished."
-                        }); //Conflict
+                        _logger.LogWarning("{0} for user {1}", errorMessage, userId);
+                        return StatusCode(409, errorMessage);
                     }
-                    //обновляем статус
-                    session.Status = SessionStatus.FINISHED;
-                    repository.Update(session);
 
+                    _sessionTracker.CloseSession(session.SessionID);
                     return Ok();
                 }
             }
             catch(Exception e)
             {
-                logger.LogCritical(e.Message);
-                logger.LogTrace(e.StackTrace);
+                _logger.LogCritical(e.Message);
+                _logger.LogTrace(e.StackTrace);
                 return BadRequest(new
                 {
                     message = e.Message

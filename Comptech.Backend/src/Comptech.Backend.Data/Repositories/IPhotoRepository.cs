@@ -10,6 +10,7 @@ namespace Comptech.Backend.Data.Repositories
     {
         Photo GetLastPhotoInSession(int sessionId);
         int GetLastPhotoIdInSession(int sessionId);
+        Photo GetPhotoById(int photoId);
     }
 
 }

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Comptech.Backend.Service.Data;
+using Newtonsoft.Json;
 
 namespace Comptech.Backend.Service
 {
@@ -48,10 +49,15 @@ namespace Comptech.Backend.Service
             services.AddOpenIddict<ApplicationUser, ApplicationRole, ApplicationDbContext, int>()
                     .DisableHttpsRequirement()
                     .SetAccessTokenLifetime(TimeSpan.FromMinutes(15));
-
+            
             services.AddMvc();
-        }
 
+            services.AddTransient<SessionValidator>();
+            services.AddSingleton<SessionTracker>();
+            services.AddSingleton(typeof(IConfiguration), Configuration);
+            services.AddSingleton<RecognitionTaskQueue>();
+        }
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
