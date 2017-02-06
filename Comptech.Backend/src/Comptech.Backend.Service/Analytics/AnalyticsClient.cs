@@ -29,15 +29,9 @@ namespace Comptech.Backend.Service.Analytics
                         await client.PostAsync("rest/request_recognition",
                         new StringContent(JsonConvert.SerializeObject(new { modelName = modelName })));
                     
-                    if (response.StatusCode.Equals(HttpStatusCode.Conflict))
-                    {
-                        return null;
-                    }
-
-                    if (!response.StatusCode.Equals(HttpStatusCode.OK))
-                    {
-                        throw new HttpRequestException();
-                    }
+                    if (response.StatusCode.Equals(HttpStatusCode.Conflict)) return null;
+                
+                    if (!response.StatusCode.Equals(HttpStatusCode.OK)) throw new HttpRequestException();
 
                     var stringResponse = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<RecognitionRequest>(stringResponse).SessionUid;
@@ -74,15 +68,9 @@ namespace Comptech.Backend.Service.Analytics
                 
                 var response = await client.GetAsync("rest/result");
                 
-                if (response.StatusCode.Equals(HttpStatusCode.Conflict))
-                {
-                    return null;
-                }
+                if (response.StatusCode.Equals(HttpStatusCode.Conflict)) return null;
 
-                if (!response.StatusCode.Equals(HttpStatusCode.OK))
-                {
-                    throw new HttpRequestException();
-                }
+                if (!response.StatusCode.Equals(HttpStatusCode.OK)) throw new HttpRequestException();
 
                 var stringResponse = await response.Content.ReadAsStringAsync();
                 var responseResults = JsonConvert.DeserializeObject<RecognitionResultsResponse>(stringResponse);
