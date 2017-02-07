@@ -18,18 +18,21 @@ namespace Comptech.Backend.Service.Analytics
         private readonly ILogger logger;
         private readonly IConfiguration configuration;
         private readonly IPhotoRepository photoRepository;
+        private readonly IRecognitionResultsRepository recognitionRepository;
         private CancellationTokenSource cancellationTokenSource;
 
         public AnalyticsAgent(RecognitionTaskQueue queue,
                        IAnalyticsClient analyticsClient,
                        ILoggerFactory loggerFactory,
                        IPhotoRepository photoRepository,
+                       IRecognitionResultsRepository recognitionRepository,
                        IConfiguration configuration)
         {
             this.queue = queue;
             this.analyticsClient = analyticsClient;
             this.photoRepository = photoRepository;
             this.configuration = configuration;
+            this.recognitionRepository = recognitionRepository;
             logger = loggerFactory.CreateLogger<AnalyticsAgent>();
         }
 
@@ -134,6 +137,7 @@ namespace Comptech.Backend.Service.Analytics
                 }
                 Thread.Sleep(pollingTimeout);
             }
+            recognitionRepository.Add(recognitionResults);
         }
     }
 }
