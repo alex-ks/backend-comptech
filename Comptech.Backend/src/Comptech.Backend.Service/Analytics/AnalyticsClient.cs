@@ -74,7 +74,7 @@ namespace Comptech.Backend.Service.Analytics
 
                 var stringResponse = await response.Content.ReadAsStringAsync();
                 var responseResults = JsonConvert.DeserializeObject<RecognitionResultsResponse>(stringResponse);
-                
+
                 var recognitionResults = new RecognitionResults(
                     responseResults.IsValid,
                     new Points (
