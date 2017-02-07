@@ -23,7 +23,7 @@ namespace Comptech.Backend.Service
     /// RecognitionTask task = queue.Dequeue();
     /// </code>
     /// </example>
-    public class RecognitionTaskQueue
+    public class RecognitionTaskQueue : IRecognitionTaskQueue
     {
         private volatile BlockingCollection<RecognitionTask> queue = new BlockingCollection<RecognitionTask>(
             new ConcurrentQueue<RecognitionTask>()
@@ -49,7 +49,7 @@ namespace Comptech.Backend.Service
             using (logger.BeginScope(nameof(Dequeue)))
             {
                 var task = queue.Take();
-                logger.LogInformation($"Task dequeued. Task information: model name {task.ModelName}, photoId {task.PhotoId}.");
+                logger.LogInformation("Task dequeued. Task information: model name {0}, photoId {1}.",task.ModelName, task.PhotoId);
                 return task;
             }
         }

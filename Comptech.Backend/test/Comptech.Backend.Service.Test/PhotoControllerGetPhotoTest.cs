@@ -33,10 +33,13 @@ namespace Comptech.Backend.Service.Test
             app = new AspApplicationMockBuilder(config).Build();
         }
 
-        private PhotoController CreateController()
+        private PhotoController CreateController(ISessionRepository sessionRepository,
+                                                 IPhotoRepository photoRepository)
         {
-            return new PhotoController(app.UserManager,
-                                       new LoggerFactory())
+            return new PhotoController(new LoggerFactory(),
+                                      photoRepository,
+                                      sessionRepository
+            )
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -58,21 +61,16 @@ namespace Comptech.Backend.Service.Test
 
             InstantiateRepositories(user, out sessionRepository, out photoRepository, out recognitionResultsRepository);
 
-            PhotoController controller = CreateController();
+            PhotoController controller = CreateController(sessionRepository, photoRepository);
 
-            var result = (await controller.GetPhoto(photoRepository,
+            var result = (await controller.GetPhoto(app.UserManager, photoRepository,
                          sessionRepository, recognitionResultsRepository) as OkObjectResult).Value;
 
             var resultPhoto = result.GetType().GetProperty("photo").GetValue(result) as string;
             var recognitionResults = getRecognitionResultsFromJsonResults(result, photoId);
 
             Assert.Equal(resultPhoto, Convert.ToBase64String(image));
-            Assert.Equal(testResults.IsValid, recognitionResults.IsValid);
-            Assert.Equal(testResults.PhotoID, recognitionResults.PhotoID);
-            Assert.Equal(testResults.Coords.TopLeft.X, recognitionResults.Coords.TopLeft.X);
-            Assert.Equal(testResults.Coords.TopLeft.Y, recognitionResults.Coords.TopLeft.Y);
-            Assert.Equal(testResults.Coords.BottomRight.X, recognitionResults.Coords.BottomRight.X);
-            Assert.Equal(testResults.Coords.BottomRight.Y, recognitionResults.Coords.BottomRight.Y);
+            Assert.Equal(testResults, recognitionResults);
         }
         
         private void InstantiateRepositories(ApplicationUser user,

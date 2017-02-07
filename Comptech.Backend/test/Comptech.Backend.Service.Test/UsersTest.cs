@@ -58,7 +58,7 @@ namespace Comptech.Backend.Service.Test
             await app.SetUser(user);
 
             UserController controller = CreateController();
-            
+
             var result = (await controller.GetUserName() as OkObjectResult).Value;
             // result has anonymous type so we can only use reflection to get value
             string name = result.GetType().GetProperty("userName").GetValue(result) as string;
