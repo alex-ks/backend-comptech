@@ -34,6 +34,8 @@ namespace Comptech.Backend.Service.Analytics
             this.configuration = configuration;
             this.recognitionRepository = recognitionRepository;
             logger = loggerFactory.CreateLogger<AnalyticsAgent>();
+
+            PollingTask();
         }
 
         public void PollingTask()
