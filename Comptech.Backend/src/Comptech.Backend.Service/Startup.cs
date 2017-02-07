@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Comptech.Backend.Service.Data;
 using Newtonsoft.Json;
 using Comptech.Backend.Service.Analytics;
+using Comptech.Backend.Service.Decryptor;
 
 namespace Comptech.Backend.Service
 {
@@ -61,6 +62,8 @@ namespace Comptech.Backend.Service
             var analyticsURL = Configuration.GetSection("AnalyticsURL").Value;
             services.AddTransient<IAnalyticsClient, AnalyticsClient>(sp => new AnalyticsClient(analyticsURL));
             services.AddSingleton<AnalyticsAgent>();
+
+            services.AddTransient<IImageDecryptor, FakeImageDecryptor>();
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

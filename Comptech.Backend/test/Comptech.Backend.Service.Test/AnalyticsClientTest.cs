@@ -10,7 +10,7 @@ namespace Comptech.Backend.Service.Test
 {
     public class AnalyticsClientTest
     {
-        private IAnalyticsClient client = new AnalyticsClient("http://94.180.119.78/");
+        private IAnalyticsClient client = new AnalyticsClient("http://themezv.ru/");
         private string modelName = "model1";
         private int photoId = 1;
         private string sessionId = null;
