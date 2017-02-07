@@ -1,17 +1,22 @@
 ﻿using Comptech.Backend.Service.Decryptor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Text;
+using Xunit;
 
 namespace Comptech.Backend.Service.Test
 {
-    public class ImageDecryptorTest : IImageDecryptor
+    public class ImageDecryptorTest
     {
-        public byte[] Decrypt(byte[] encryptedImage)
+        /// <summary>
+        /// Quite synthetic and stupid test for Decrypt
+        /// </summary>
+        [Fact]
+        public void TestDecrypt()
         {
-            return encryptedImage;
+            ImageDecryptor decryptor = new ImageDecryptor(new LoggerFactory());
+            string encryptedPhoto = "some photo";
+            var decryptedPhoto = decryptor.Decrypt(Encoding.Unicode.GetBytes(encryptedPhoto));
+            Assert.NotEqual(encryptedPhoto, Encoding.Unicode.GetString(decryptedPhoto));
         }
-        
     }
 }
