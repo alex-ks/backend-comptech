@@ -60,7 +60,6 @@ namespace Comptech.Backend.Service
 
             var analyticsURL = Configuration.GetSection("AnalyticsURL").Value;
             services.AddTransient<IAnalyticsClient, AnalyticsClient>(sp => new AnalyticsClient(analyticsURL));
-            var agent = new AnalyticsAgent();
             services.AddSingleton<AnalyticsAgent>();
         }
         
