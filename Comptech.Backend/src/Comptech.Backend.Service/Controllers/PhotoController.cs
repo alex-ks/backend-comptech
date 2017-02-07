@@ -87,11 +87,11 @@ namespace Comptech.Backend.Service.Controllers
 
         [Route("rest/photo")]
         [HttpGet]
-        public async Task<IActionResult> GetPhotoAndRecognitionResults(
+        public async Task<IActionResult> GetRecognitionResults(
             [FromServices] UserManager<ApplicationUser> userManager,
             [FromServices] IRecognitionResultsRepository recognitionResultsRepository)
         {
-            using (_logger.BeginScope(nameof(GetPhotoAndRecognitionResults)))
+            using (_logger.BeginScope(nameof(GetRecognitionResults)))
             {
                 try
                 {
@@ -113,19 +113,14 @@ namespace Comptech.Backend.Service.Controllers
                     if (recognitionResults == null)
                     {
                         _logger.LogInformation("Recognition results are not ready for photo {0} yet", photo.PhotoID);
-                        return Ok(new
-                        {
-                            photo = Convert.ToBase64String(photo.Image),
-                            recognitionResult = (string)null
-                        });
+                        return Ok(new { recognitionResult = (string) null });
                     }
 
                     _logger.LogInformation(
                         "Recognition results for photo {0} were successfully retrieved", photo.PhotoID);
-                        
+
                     return Ok(new
                     {
-                        photo = Convert.ToBase64String(photo.Image),
                         recognitionResult = new
                         {
                             valid = recognitionResults.IsValid,

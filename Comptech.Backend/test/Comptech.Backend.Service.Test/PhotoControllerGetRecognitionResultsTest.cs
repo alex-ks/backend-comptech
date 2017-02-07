@@ -48,7 +48,7 @@ namespace Comptech.Backend.Service.Test
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public async void GetPhotoAndRecognitionResultsTest(bool recognitionResultsArePresent)
+        public async void GetRecognitionResultsTest(bool recognitionResultsArePresent)
         {
 
             var user = new ApplicationUser
@@ -84,14 +84,11 @@ namespace Comptech.Backend.Service.Test
 
             PhotoController photoController = CreateController(testSession, testPhoto);
 
-            var result = (await photoController.GetPhotoAndRecognitionResults(
+            var result = (await photoController.GetRecognitionResults(
                 app.UserManager, recognitionResultsRepository) as OkObjectResult).Value;
-
-            string resultPhoto = getPhotoFromJsonResult(result);
 
             RecognitionResults requestRecognitionResults = getRecognitionResultsFromJsonResult(result, photoId);
 
-            Assert.Equal(resultPhoto, Convert.ToBase64String(image));
             if (recognitionResultsArePresent)
             {
                 Assert.Equal(testRecognitionResults, requestRecognitionResults);
@@ -102,11 +99,6 @@ namespace Comptech.Backend.Service.Test
             }
 
 
-        }
-
-        private string getPhotoFromJsonResult(Object result)
-        {
-            return result.GetType().GetProperty("photo").GetValue(result) as string;
         }
 
         private RecognitionResults getRecognitionResultsFromJsonResult(Object result, int photoId)
