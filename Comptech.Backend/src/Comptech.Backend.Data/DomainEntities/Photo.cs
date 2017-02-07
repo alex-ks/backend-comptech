@@ -12,6 +12,8 @@ namespace Comptech.Backend.Data.DomainEntities
         public byte[] Image { get; set; }
         public DateTime TimeStamp { get; set; }
 
+        public Photo() { }
+
         public Photo(int sessionID, byte[] image, DateTime timeStamp)
         {
             SessionID = sessionID;

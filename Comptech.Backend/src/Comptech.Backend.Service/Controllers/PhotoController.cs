@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Comptech.Backend.Data.Repositories;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Comptech.Backend.Service.Data;
+using Comptech.Backend.Data.Repositories;
+using Comptech.Backend.Data.DomainEntities;
 using Comptech.Backend.Service.Models;
 using Comptech.Backend.Service.Decryptor;
-using Comptech.Backend.Data.DomainEntities;
-using Comptech.Backend.Service;
 using Microsoft.Extensions.Configuration;
 
 namespace Comptech.Backend.Service.Controllers
@@ -29,7 +26,7 @@ namespace Comptech.Backend.Service.Controllers
 
         #region Ctor
         public PhotoController(ILoggerFactory loggerFactory,
-                               IPhotoRepository photoRepository, 
+                               IPhotoRepository photoRepository,
                                ISessionRepository sessionRepository)
         {
             _logger = loggerFactory.CreateLogger<UserController>();
@@ -84,6 +81,69 @@ namespace Comptech.Backend.Service.Controllers
                 {
                     _logger.LogError("Exception caught: {0}, {1}", ex.Message, ex.StackTrace);
                     return StatusCode(409, new { message = ex.Message });
+                }
+            }
+        }
+
+        [Route("rest/photo")]
+        [HttpGet]
+        public async Task<IActionResult> GetRecognitionResults(
+            [FromServices] UserManager<ApplicationUser> userManager,
+            [FromServices] IRecognitionResultsRepository recognitionResultsRepository)
+        {
+            using (_logger.BeginScope(nameof(GetRecognitionResults)))
+            {
+                try
+                {
+                    var user = await userManager.GetUserAsync(HttpContext.User);
+                    int userId = int.Parse(await userManager.GetUserIdAsync(user));
+                    Session session = _sessionRepository.GetLastSessionForUser(userId);
+                    if (session == null)
+                    {
+                        return BadRequest("Session is not started yet.");
+                    }
+
+                    _logger.LogInformation("Trying to get photo for session {0}", session.SessionID);
+                    Photo photo = _photoRepository.GetLastPhotoInSession(session.SessionID);
+
+                    _logger.LogInformation("Trying to get recognition results for photo {0}", photo.PhotoID);
+                    RecognitionResults recognitionResults =
+                        recognitionResultsRepository.GetRecognitionResultsByPhotoId(photo.PhotoID);
+
+                    if (recognitionResults == null)
+                    {
+                        _logger.LogInformation("Recognition results are not ready for photo {0} yet", photo.PhotoID);
+                        return Ok(new { recognitionResult = (string) null });
+                    }
+
+                    _logger.LogInformation(
+                        "Recognition results for photo {0} were successfully retrieved", photo.PhotoID);
+
+                    return Ok(new
+                    {
+                        recognitionResult = new
+                        {
+                            valid = recognitionResults.IsValid,
+                            coordinates = new
+                            {
+                                topLeft = new
+                                {
+                                    x = recognitionResults.Coords.TopLeft.X,
+                                    y = recognitionResults.Coords.TopLeft.Y,
+                                },
+                                bottomRight = new
+                                {
+                                    x = recognitionResults.Coords.BottomRight.X,
+                                    y = recognitionResults.Coords.BottomRight.Y,
+                                }
+                            }
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Exception caught: {0}, {1}", e.Message, e.StackTrace);
+                    return BadRequest(e.Message);
                 }
             }
         }

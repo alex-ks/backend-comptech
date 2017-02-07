@@ -11,6 +11,8 @@ namespace Comptech.Backend.Data.DomainEntities
         public int BPM { get; set; }
         public DateTime TimeStamp { get; set; }
 
+        public Pulse() { }
+
         public Pulse(int sessionID, int bpm, DateTime timeStamp)
         {
             SessionID = sessionID;
