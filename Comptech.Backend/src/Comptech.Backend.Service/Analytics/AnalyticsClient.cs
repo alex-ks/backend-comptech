@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace Comptech.Backend.Service.Analytics
 {
@@ -24,13 +25,12 @@ namespace Comptech.Backend.Service.Analytics
             using (var client = new HttpClient())
             {
                     client.BaseAddress = analyticsServerUri;
-
                     var response = 
-                        await client.PostAsync("rest/request_recognition",
+                        await client.PostAsync("/rest/request_recognition/",
                         new StringContent(JsonConvert.SerializeObject(new { modelName = modelName })));
-                    
+
                     if (response.StatusCode.Equals(HttpStatusCode.Conflict)) return null;
-                
+
                     if (!response.StatusCode.Equals(HttpStatusCode.OK)) throw new HttpRequestException();
 
                     var stringResponse = await response.Content.ReadAsStringAsync();
@@ -46,7 +46,7 @@ namespace Comptech.Backend.Service.Analytics
                 client.BaseAddress = analyticsServerUri;
                 
                 var response = 
-                    await client.PostAsync("rest/start_recognition", 
+                    await client.PostAsync("rest/start_recognition/", 
                     new StringContent(JsonConvert.SerializeObject(
                         new 
                         { 
@@ -66,8 +66,8 @@ namespace Comptech.Backend.Service.Analytics
             {
                 client.BaseAddress = analyticsServerUri;
                 
-                var response = await client.GetAsync("rest/result");
-                
+                var response = await client.GetAsync($"rest/result/?session_uid={sessionUid}");
+
                 if (response.StatusCode.Equals(HttpStatusCode.Conflict)) return null;
 
                 if (!response.StatusCode.Equals(HttpStatusCode.OK)) throw new HttpRequestException();
