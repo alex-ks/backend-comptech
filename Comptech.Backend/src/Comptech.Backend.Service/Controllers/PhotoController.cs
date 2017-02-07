@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Comptech.Backend.Service.Data;
+using Comptech.Backend.Service.Models;
+using Comptech.Backend.Data.DomainEntities;
+using Comptech.Backend.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Comptech.Backend.Service.Data;
-using Comptech.Backend.Data.Repositories;
-using Comptech.Backend.Data.DomainEntities;
-using Comptech.Backend.Service.Models;
 using Comptech.Backend.Service.Decryptor;
 using Microsoft.Extensions.Configuration;
 using Comptech.Backend.Service.Analytics;
@@ -89,6 +89,67 @@ namespace Comptech.Backend.Service.Controllers
 
         [Route("rest/photo")]
         [HttpGet]
+        public async Task<IActionResult> GetPhoto([FromServices] UserManager<ApplicationUser> userManager,
+                                                  [FromServices] IPhotoRepository photoRepository,
+                                                  [FromServices] ISessionRepository sessionRepository,
+                                                  [FromServices] IRecognitionResultsRepository recognitionResultsRepository)
+        {
+            using (_logger.BeginScope(nameof(GetPhoto)))
+            {
+                _logger.LogInformation("Frontend tries to get photo");
+                try
+                {
+                    var user = await userManager.GetUserAsync(HttpContext.User);
+                    var session =
+                        sessionRepository.GetLastSessionForUser(int.Parse(await userManager.GetUserIdAsync(user)));
+
+                    if (null == session)
+                    {
+                        return BadRequest("User has no sessions");
+                    }
+
+                    var photo = photoRepository.GetLastPhotoInSession(session.SessionID);
+                    var recognitionResults = recognitionResultsRepository.GetRecognitionResultsByPhotoId(photo.PhotoID);
+
+                    var recognitionResultsResponse = (null == recognitionResults)
+                    ?
+                    null
+                    :
+                    new
+                    {
+                        valid = recognitionResults.IsValid,
+                        coordinates = new
+                        {
+                            topLeft = new
+                            {
+                                x = recognitionResults.Coords.TopLeft.X,
+                                y = recognitionResults.Coords.TopLeft.Y
+                            },
+                            bottomRight = new
+                            {
+                                x = recognitionResults.Coords.BottomRight.X,
+                                y = recognitionResults.Coords.BottomRight.Y
+                            }
+                        }
+                    };
+
+                    return Ok(new
+                    {
+                        photo = System.Convert.ToBase64String(photo.Image),
+                        recognitionResults = recognitionResultsResponse
+                    }
+                    );
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError("Exception caught: {0}, {1}", exception.Message, exception.StackTrace);
+                    return BadRequest(exception.Message);
+                }
+            }
+        }
+
+        [Route("rest/photo/result")]
+        [HttpGet]
         public async Task<IActionResult> GetRecognitionResults(
             [FromServices] UserManager<ApplicationUser> userManager,
             [FromServices] IRecognitionResultsRepository recognitionResultsRepository)
@@ -115,7 +176,7 @@ namespace Comptech.Backend.Service.Controllers
                     if (recognitionResults == null)
                     {
                         _logger.LogInformation("Recognition results are not ready for photo {0} yet", photo.PhotoID);
-                        return Ok(new { recognitionResult = (string) null });
+                        return Ok(new { recognitionResult = (string)null });
                     }
 
                     _logger.LogInformation(
