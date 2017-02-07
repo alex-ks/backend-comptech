@@ -81,7 +81,9 @@ namespace Comptech.Backend.Service.Test
             var testPhoto = new Photo(testSession.SessionID, new byte[] { 0x20, 0x20, 0x20 }, DateTime.UtcNow);
             testPhoto.PhotoID = 2;
 
-            IImageDecryptor decryptor = new ImageDecryptorTest();
+            IImageDecryptor decryptor = Mock.Of<IImageDecryptor>(
+                id => id.Decrypt(It.IsAny<byte[]>()) == testPhoto.Image);
+                
             IRecognitionTaskQueue taskQueue = new RecognitionTaskQueue(new LoggerFactory());
 
             //Act

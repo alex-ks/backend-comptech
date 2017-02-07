@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Comptech.Backend.Service.Test
 {
-    public class ImageDecryptorTest
+    public class ImageDecryptorTest 
     {
         /// <summary>
         /// Quite synthetic and stupid test for Decrypt
