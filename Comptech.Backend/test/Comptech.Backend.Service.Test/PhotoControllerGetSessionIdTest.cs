@@ -95,7 +95,8 @@ namespace Comptech.Backend.Service.Test
                 new SessionTracker(new LoggerFactory(), sessionRepository, conf, new SessionValidator(new LoggerFactory())),
                 decryptor,
                 taskQueue,
-                conf)
+                conf,
+                null)
                 as OkObjectResult).Value;
 
             var resultValue = result.GetType().GetProperty("SessionId").GetValue(result) as string;
