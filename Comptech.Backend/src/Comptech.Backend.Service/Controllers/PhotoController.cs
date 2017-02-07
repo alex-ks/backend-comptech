@@ -10,6 +10,7 @@ using System;
 using System.Threading.Tasks;
 using Comptech.Backend.Service.Decryptor;
 using Microsoft.Extensions.Configuration;
+using Comptech.Backend.Service.Analytics;
 
 namespace Comptech.Backend.Service.Controllers
 {
@@ -45,7 +46,8 @@ namespace Comptech.Backend.Service.Controllers
             [FromServices] SessionTracker sessionTracker,
             [FromServices] IImageDecryptor imageDecryptor,
             [FromServices] IRecognitionTaskQueue taskQueue,
-            [FromServices] IConfiguration configuration)
+            [FromServices] IConfiguration configuration,
+            [FromServices] AnalyticsAgent agent)
         {
             using (_logger.BeginScope(nameof(UploadPhotoAndStartSession)))
             {

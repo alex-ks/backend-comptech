@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Comptech.Backend.Service.Data;
 using Newtonsoft.Json;
+using Comptech.Backend.Service.Analytics;
 
 namespace Comptech.Backend.Service
 {
@@ -56,6 +57,10 @@ namespace Comptech.Backend.Service
             services.AddSingleton<SessionTracker>();
             services.AddSingleton(typeof(IConfiguration), Configuration);
             services.AddSingleton<RecognitionTaskQueue>();
+
+            var analyticsURL = Configuration.GetSection("AnalyticsURL").Value;
+            services.AddTransient<IAnalyticsClient, AnalyticsClient>(sp => new AnalyticsClient(analyticsURL));
+            services.AddSingleton<AnalyticsAgent>();
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
