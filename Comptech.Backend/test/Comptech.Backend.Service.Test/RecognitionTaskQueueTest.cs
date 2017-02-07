@@ -18,9 +18,7 @@ namespace Comptech.Backend.Service.Test
         public void TestEnqueue()
         {
             queue.ClearQueue();
-            var task = new RecognitionTask();
-            task.ModelName = modelName;
-            task.PhotoId = photoId;
+            var task = new RecognitionTask(modelName, photoId);
             queue.Enqueue(task);
             Assert.True(queue.GetQueueCount() == 1);
         }
@@ -32,9 +30,7 @@ namespace Comptech.Backend.Service.Test
         public void TestDequeue()
         {
             queue.ClearQueue();
-            var task = new RecognitionTask();
-            task.ModelName = modelName;
-            task.PhotoId = photoId;
+            var task = new RecognitionTask(modelName, photoId);
             queue.Enqueue(task);
             var taskRes = queue.Dequeue();
             Assert.Equal(task, taskRes);
