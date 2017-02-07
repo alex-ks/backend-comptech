@@ -35,6 +35,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                         context.Photos.Add(dbPhoto);
                         context.SaveChanges();
                         _logger.LogDebug("Photo added successfully");
+                        entity.PhotoID = dbPhoto.PhotoId;
                         return true;
                     }
                     catch (Exception e)

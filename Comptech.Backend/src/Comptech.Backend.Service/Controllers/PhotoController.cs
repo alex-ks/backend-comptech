@@ -14,9 +14,7 @@ using Comptech.Backend.Service.Analytics;
 
 namespace Comptech.Backend.Service.Controllers
 {
-    [Route("rest/[controller]")]
-    [Authorize("Bearer")]
-    [Produces("application/json")]
+    [Authorize]
     public class PhotoController : Controller
     {
         #region Fields
@@ -45,7 +43,7 @@ namespace Comptech.Backend.Service.Controllers
             [FromServices] UserManager<ApplicationUser> userManager,
             [FromServices] SessionTracker sessionTracker,
             [FromServices] IImageDecryptor imageDecryptor,
-            [FromServices] IRecognitionTaskQueue taskQueue,
+            [FromServices] RecognitionTaskQueue taskQueue,
             [FromServices] IConfiguration configuration,
             [FromServices] AnalyticsAgent agent)
         {

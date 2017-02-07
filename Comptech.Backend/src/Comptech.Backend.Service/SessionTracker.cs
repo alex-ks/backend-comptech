@@ -58,7 +58,7 @@ namespace Comptech.Backend.Service
         private void RemoveTimedOut()
         {
             var sessionIds = _sessionRepository.GetAllExpired();
-            _logger.LogInformation($"Timedout: {string.Join(", ", sessionIds)}");
+            //_logger.LogInformation($"Timedout: {string.Join(", ", sessionIds)}");
             foreach (var s in sessionIds)
             {
                 CloseSession(s);

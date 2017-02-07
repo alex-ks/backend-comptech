@@ -125,7 +125,8 @@ namespace Comptech.Backend.Data
                 .Entity<DbResult>()
                 .HasOne(p => p.Photo)
                 .WithOne()
-                .HasForeignKey<DbPhoto>(p => p.PhotoId);
+                .HasForeignKey<DbResult>(p => p.PhotoId)
+                .HasPrincipalKey<DbPhoto>(p => p.PhotoId);
 
             modelBuilder
                 .Entity<DbResult>()

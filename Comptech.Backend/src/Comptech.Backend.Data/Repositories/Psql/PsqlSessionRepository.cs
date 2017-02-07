@@ -43,6 +43,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                     }
                 }
 
+                entity.SessionID = dbEntity.SessionId;
                 _logger.LogDebug("Add succeeded");
                 return true;
             }
@@ -141,7 +142,7 @@ namespace Comptech.Backend.Data.Repositories.Psql
                                   where s.ExpiresAt < cutOff
                                   select s.SessionId;
 
-                    return result;
+                    return result.ToList();
                 }
             }
         }

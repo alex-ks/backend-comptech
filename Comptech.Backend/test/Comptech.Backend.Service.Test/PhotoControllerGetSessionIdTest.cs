@@ -84,7 +84,7 @@ namespace Comptech.Backend.Service.Test
             IImageDecryptor decryptor = Mock.Of<IImageDecryptor>(
                 id => id.Decrypt(It.IsAny<byte[]>()) == testPhoto.Image);
                 
-            IRecognitionTaskQueue taskQueue = new RecognitionTaskQueue(new LoggerFactory());
+            RecognitionTaskQueue taskQueue = new RecognitionTaskQueue(new LoggerFactory());
 
             //Act
             PhotoController controller = CreateController(testSession, testPhoto);

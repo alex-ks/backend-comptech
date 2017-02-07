@@ -13,6 +13,8 @@ using Comptech.Backend.Service.Data;
 using Newtonsoft.Json;
 using Comptech.Backend.Service.Analytics;
 using Comptech.Backend.Service.Decryptor;
+using Comptech.Backend.Data.Repositories;
+using Comptech.Backend.Data.Repositories.Psql;
 
 namespace Comptech.Backend.Service
 {
@@ -64,6 +66,11 @@ namespace Comptech.Backend.Service
             services.AddSingleton<AnalyticsAgent>();
 
             services.AddTransient<IImageDecryptor, FakeImageDecryptor>();
+
+            services.AddTransient<IPhotoRepository, PsqlPhotoRepository>();
+            services.AddTransient<IPulseRepository, PsqlPulseRepository>();
+            services.AddTransient<IRecognitionResultsRepository, PsqlRecognitionResultsRepository>();
+            services.AddTransient<ISessionRepository, PsqlSessionRepository>();
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

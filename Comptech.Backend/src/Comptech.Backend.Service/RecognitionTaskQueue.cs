@@ -23,7 +23,7 @@ namespace Comptech.Backend.Service
     /// RecognitionTask task = queue.Dequeue();
     /// </code>
     /// </example>
-    public class RecognitionTaskQueue : IRecognitionTaskQueue
+    public class RecognitionTaskQueue
     {
         private volatile BlockingCollection<RecognitionTask> queue = new BlockingCollection<RecognitionTask>(
             new ConcurrentQueue<RecognitionTask>()

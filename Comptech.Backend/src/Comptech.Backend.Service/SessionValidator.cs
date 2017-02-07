@@ -31,18 +31,22 @@ namespace Comptech.Backend.Service
 
         public bool IsActiveSession(Session session, out string errorMessage)
         {
+            errorMessage = null;
+            if (session == null)
+                return false;
+            if (session.ExpiresAt < DateTime.UtcNow)
+                return false;
             if (session.Status == SessionStatus.ACTIVE)
             {
                 logger.LogInformation("Session of user with sessionId {0} has already been started", session.SessionID);
                 errorMessage = "Session with user has already been started";
                 return true;
             }
-            errorMessage = null;
             return false;
         }
         public bool IsFinishedSession(Session session, out string errorMessage)
         {
-            if (session.Status == SessionStatus.FINISHED)
+            if (session.Status == SessionStatus.FINISHED || session.ExpiresAt < DateTime.UtcNow)
             {
                 logger.LogInformation("Session of user with sessionId {0} is finished", session.SessionID);
                 errorMessage = "Session of user is finished";

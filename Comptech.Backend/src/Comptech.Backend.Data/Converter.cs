@@ -84,10 +84,10 @@ namespace Comptech.Backend.Data
         {
             Photo photo = new Photo
             {
-                PhotoID=entity.PhotoId,
-                SessionID=entity.SessionId,
-                Image=entity.Image,
-                TimeStamp=entity.Timestamp
+                PhotoID = entity.PhotoId,
+                SessionID = entity.SessionId,
+                Image = entity.Image,
+                TimeStamp = DateTime.SpecifyKind(entity.Timestamp, DateTimeKind.Utc)
             };
             return photo;
         }
@@ -96,9 +96,9 @@ namespace Comptech.Backend.Data
         {
             Pulse pulse = new Pulse
             {
-                SessionID=entity.SessionId,
-                BPM=entity.Bpm,
-                TimeStamp=entity.timestamp
+                SessionID = entity.SessionId,
+                BPM = entity.Bpm,
+                TimeStamp = DateTime.SpecifyKind(entity.timestamp, DateTimeKind.Utc)
             };
             return pulse;
         }
@@ -109,8 +109,8 @@ namespace Comptech.Backend.Data
             {
                 SessionID = entity.SessionId,
                 UserID = entity.UserId,
-                Start = entity.Start,
-                ExpiresAt = entity.ExpiresAt,
+                Start = DateTime.SpecifyKind(entity.Start, DateTimeKind.Utc),
+                ExpiresAt = DateTime.SpecifyKind(entity.ExpiresAt, DateTimeKind.Utc),
                 Status = (SessionStatus)Enum.Parse(typeof(SessionStatus),entity.Status)
             };
             return session;
