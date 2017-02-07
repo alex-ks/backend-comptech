@@ -97,20 +97,26 @@ namespace Comptech.Backend.Service.Analytics
             
             Photo photo = photoRepository.GetPhotoById(recognitionTask.PhotoId);
 
-            bool isPhotoAploaded = false;
-            while (!isPhotoAploaded)
+            bool isPhotoUploaded = false;
+            int photoUploadTryCount = int.Parse(configuration.GetSection("PhotoUploadTryCount").Value);
+            for (int i = 0; i < photoUploadTryCount; i++)
             {
                 try
                 {
                     await analyticsClient.UploadPhoto(photo.Image, recognitionSessionUID);
-                    isPhotoAploaded = true;
-
+                    isPhotoUploaded = true;
+                    break;
                 }
                 catch (Exception exception)
                 {
                     logger.LogError("Exception caught: {0}, {1}", exception.Message, exception.StackTrace);
                     Thread.Sleep(pollingTimeout);
                 }
+            }
+            if (!isPhotoUploaded)
+            {
+                queue.Enqueue(recognitionTask);
+                return;
             }
 
             RecognitionResults recognitionResults = null;
