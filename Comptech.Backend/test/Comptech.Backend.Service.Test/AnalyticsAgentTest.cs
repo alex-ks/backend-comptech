@@ -21,7 +21,6 @@ namespace Comptech.Backend.Service.Test
         private AspApplicationMock app;
         private IAnalyticsClient client = new AnalyticsClientMock();
         private MockRepository repository = new MockRepository(MockBehavior.Default);
-        //private ILoggerFactory loggerFactory = new LoggerFactory();
         private RecognitionTaskQueue queue = new RecognitionTaskQueue(new LoggerFactory());
         private IPhotoRepository photoRepository;
         private IConfiguration configuration;
@@ -43,6 +42,19 @@ namespace Comptech.Backend.Service.Test
         [Fact]
         public async void CanRun()
         {
+            await InitializeQueue();
+
+            ILoggerFactory logger = new LoggerFactory();
+            AnalyticsAgent agent = new AnalyticsAgent(queue, client, logger, photoRepository, recognitionResultsRepository, configuration);
+
+            agent.PollingTask();
+            Thread.Sleep(1000);
+
+            Assert.True(recognitionResultsRepository.GetRecognitionResultsByPhotoId(2) != null);
+        }
+
+        private async Task InitializeQueue()
+        {
             var user = new ApplicationUser { UserName = "UserTest", Email = "test@mail.ru" };
             await app.UserManager.CreateAsync(user, "UserTest@123");
             await app.SetUser(user);
@@ -63,15 +75,6 @@ namespace Comptech.Backend.Service.Test
                 RecognitionTask recognitionTask = new RecognitionTask("model1", 2);
                 queue.Enqueue(recognitionTask);
             }
-
-            ILoggerFactory logger = new LoggerFactory();
-            AnalyticsAgent agent = new AnalyticsAgent(queue, client, logger, photoRepository, recognitionResultsRepository, configuration);
-
-            agent.PollingTask();
-
-            Thread.Sleep(1000);
-
-            Assert.True(recognitionResultsRepository.GetRecognitionResultsByPhotoId(2) != null);
         }
     }
 }
