@@ -15,8 +15,8 @@ namespace Comptech.Backend.Service.Decryptor
     public class ImageDecryptor : IImageDecryptor
     {
         //I hope that string will be marshalled to const char *
-        [DllImport("libEncrypt.so")]
-        private static extern void decrypt(string name_file_in, string name_file_out);
+        [DllImport("libEncrypt.so", EntryPoint = "decrypt_f")]
+        private static extern void decrypt_f(string name_file_in, string name_file_out);
 
         private readonly ILogger<ImageDecryptor> logger;
 
@@ -47,7 +47,7 @@ namespace Comptech.Backend.Service.Decryptor
             var decFileInfo = new FileInfo(tmpDecName);
             fsDecrypted = decFileInfo.Create();
             logger.LogInformation("Decrypting...");
-            decrypt(tmpEncName, tmpDecName);
+            decrypt_f(tmpEncName, tmpDecName);
             using (fsDecrypted = new FileStream(tmpDecName, FileMode.Create, FileAccess.Read))
             {
                 decBytePhoto = new byte[decFileInfo.Length];
