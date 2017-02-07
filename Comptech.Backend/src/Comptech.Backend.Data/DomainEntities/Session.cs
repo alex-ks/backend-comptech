@@ -13,6 +13,8 @@ namespace Comptech.Backend.Data.DomainEntities
         public DateTime ExpiresAt { get; set; }
         public SessionStatus Status { get; set; }
 
+        public Session() { }
+
         public Session(int userID, DateTime start, DateTime expiresAt, SessionStatus status)
         {
             UserID = userID;
